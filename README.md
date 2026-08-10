@@ -4,7 +4,7 @@ English | [中文](README.zh.md)
 
 # Nikki
 
-Transparent Proxy with Mihomo on OpenWrt.
+Transparent Proxy with clash-rs on OpenWrt.
 
 ## Prerequisites
 
@@ -36,13 +36,13 @@ wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/fe
 ```shell
 # you can install from shell or `Software` menu in LuCI
 # for opkg
-opkg install nikki
-opkg install luci-app-nikki
-opkg install luci-i18n-nikki-zh-cn
+opkg install nikki-rs
+opkg install luci-app-nikki-rs
+opkg install luci-i18n-nikki-rs-zh-cn
 # for apk
-apk add nikki
-apk add luci-app-nikki
-apk add luci-i18n-nikki-zh-cn
+apk add nikki-rs
+apk add luci-app-nikki-rs
+apk add luci-i18n-nikki-rs-zh-cn
 ```
 
 ### B. Install From Release
@@ -64,7 +64,7 @@ See [Wiki](https://github.com/nikkinikki-org/OpenWrt-nikki/wiki)
 ## How does it work
 
 1. Mixin and Update profile.
-2. Run mihomo.
+2. Run clash-rs.
 3. Set scheduled restart.
 4. Set ip rule/route
 5. Generate nftables and apply it.
@@ -80,10 +80,10 @@ echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >>
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 # make package
-make package/luci-app-nikki/compile
+make package/luci-app-nikki-rs/compile
 ```
 
-The package files will be found under `bin/packages/your_architecture/nikki`.
+The package files will be found under `bin/packages/your_architecture/nikki-rs`.
 
 ## Dependencies
 

@@ -32,7 +32,7 @@ esac
 
 # feed url
 repository_url="https://nikkinikki.pages.dev"
-feed_url="$repository_url/$branch/$arch/nikki"
+feed_url="$repository_url/$branch/$arch/nikki-rs"
 
 if [ -x "/bin/opkg" ]; then
 	# add key
@@ -43,10 +43,10 @@ if [ -x "/bin/opkg" ]; then
 	rm -f "$key_build_pub_file"
 	# add feed
 	echo "add feed"
-	if grep -q nikki /etc/opkg/customfeeds.conf; then
-		sed -i '/nikki/d' /etc/opkg/customfeeds.conf
+	if grep -q nikki-rs /etc/opkg/customfeeds.conf; then
+		sed -i '/nikki-rs/d' /etc/opkg/customfeeds.conf
 	fi
-	echo "src/gz nikki $feed_url" >> /etc/opkg/customfeeds.conf
+	echo "src/gz nikki-rs $feed_url" >> /etc/opkg/customfeeds.conf
 	# update feeds
 	echo "update feeds"
 	opkg update
@@ -56,8 +56,8 @@ elif [ -x "/usr/bin/apk" ]; then
 	wget -O "/etc/apk/keys/nikki.pem" "$repository_url/public-key.pem"
 	# add feed
 	echo "add feed"
-	if grep -q nikki /etc/apk/repositories.d/customfeeds.list; then
-		sed -i '/nikki/d' /etc/apk/repositories.d/customfeeds.list
+	if grep -q nikki-rs /etc/apk/repositories.d/customfeeds.list; then
+		sed -i '/nikki-rs/d' /etc/apk/repositories.d/customfeeds.list
 	fi
 	echo "$feed_url/packages.adb" >> /etc/apk/repositories.d/customfeeds.list
 	# update feeds

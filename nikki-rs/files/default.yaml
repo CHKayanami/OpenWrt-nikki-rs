@@ -1,0 +1,174 @@
+mixed-port: 7890
+tproxy-port: 7892
+allow-lan: true
+mode: Rule
+log-level: error 
+ipv6: true
+external-controller: 0.0.0.0:9999
+cors-allow-origins:
+  - "*"
+secret: "123456"
+find-process-mode: "off"
+routing-mark: 7894
+dns:
+  enable: true
+  listen: "[::]:1053"
+  use-hosts: true
+  ipv6: true
+  default-nameserver:
+    - system
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: fc00::/18
+  fake-ip-filter:
+    - "rule-set:geosite-cn"
+    - "rule-set:private"
+    - "rule-set:apple-cn"
+
+  black-filter: 
+    - "rule-set:ads"
+
+  nameserver: [127.0.0.1]
+hosts:
+  'time.android.com': 203.107.6.88
+  'time.facebook.com': 203.107.6.88
+  'localhost': 127.0.0.1
+proxies:
+  
+
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - DIRECT
+    include-all: true
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    proxies:
+    include-all: true
+  - name: 🌍 国外媒体
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - 🎯 全球直连
+    include-all: true
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+    include-all: true
+  - name: Ⓜ️ 微软服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+    include-all: true
+  - name: 📹 油管视频
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+    include-all: true
+  - name: AI
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+    include-all: true
+  - name: 🇬 谷歌服务
+    type: select
+    proxies:
+      - 🎯 全球直连
+      - 🚀 节点选择
+    include-all: true
+  - name: 🍎 苹果服务
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+    include-all: true
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+  - name: 🍃 应用净化
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - ♻️ 自动选择
+    include-all: true
+rules:
+ - RULE-SET,ads,🍃 应用净化
+ - RULE-SET,microsoft-cn,Ⓜ️ 微软服务
+ - RULE-SET,apple-cn,🍎 苹果服务
+ - RULE-SET,ai,AI
+ - RULE-SET,google-lite,🇬 谷歌服务
+ - RULE-SET,youtube,📹 油管视频
+ - RULE-SET,media,🌍 国外媒体
+ - RULE-SET,telegramip,📲 电报信息,no-resolve
+ - MATCH,🐟 漏网之鱼
+rule-providers:
+  private:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/fakeip-filter.mrs
+  ads:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/ads.mrs
+  microsoft-cn:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/microsoft-cn.mrs
+  apple-cn:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/apple-cn.mrs
+  google-lite:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/google-lite.mrs
+  youtube:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/youtube.mrs
+  media:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/media.mrs
+  telegramip:
+    type: file
+    behavior: ipcidr
+    format: mrs
+    path: rule_set/telegramip.mrs
+  geosite-cn:
+    type: file
+    behavior: domain
+    format: mrs
+    path: rule_set/geosite-cn.mrs

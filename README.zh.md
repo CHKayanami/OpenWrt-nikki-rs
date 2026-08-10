@@ -4,7 +4,7 @@
 
 # Nikki
 
-在 OpenWrt 上使用 Mihomo 进行透明代理。
+在 OpenWrt 上使用 clash-rs 进行透明代理。
 
 ## 环境要求
 
@@ -36,13 +36,13 @@ wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/fe
 ```shell
 # 你可以从 shell 执行命令安装或者从 LuCI 的`软件包`菜单安装
 # for opkg
-opkg install nikki
-opkg install luci-app-nikki
-opkg install luci-i18n-nikki-zh-cn
+opkg install nikki-rs
+opkg install luci-app-nikki-rs
+opkg install luci-i18n-nikki-rs-zh-cn
 # for apk
-apk add nikki
-apk add luci-app-nikki
-apk add luci-i18n-nikki-zh-cn
+apk add nikki-rs
+apk add luci-app-nikki-rs
+apk add luci-i18n-nikki-rs-zh-cn
 ```
 
 ### B. 从发行版安装
@@ -64,7 +64,7 @@ wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/un
 ## 如何工作
 
 1. 混入并更新配置文件。
-2. 启动 Mihomo。
+2. 启动 clash-rs。
 3. 设置定时重启。
 4. 配置 IP 规则/路由。
 5. 生成防火墙配置并应用。
@@ -80,10 +80,10 @@ echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >>
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 # 编译
-make package/luci-app-nikki/compile
+make package/luci-app-nikki-rs/compile
 ```
 
-编译结果可以在`bin/packages/your_architecture/nikki`内找到。
+编译结果可以在`bin/packages/your_architecture/nikki-rs`内找到。
 
 ## 依赖
 

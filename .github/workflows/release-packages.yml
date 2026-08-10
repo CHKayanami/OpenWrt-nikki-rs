@@ -63,8 +63,8 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
-          FEEDNAME: nikki
-          PACKAGES: mihomo-alpha mihomo-meta nikki luci-app-nikki
+          FEEDNAME: nikki-rs
+          PACKAGES: clash-rs nikki-rs luci-app-nikki-rs
           INDEX: 1
           KEY_BUILD: ${{ secrets.KEY_BUILD }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
@@ -72,23 +72,23 @@ jobs:
 
       - name: compress
         run: |
-          tar -c -z -f nikki_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz -C bin/packages/${{ matrix.arch }}/nikki .
+          tar -c -z -f nikki-rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz -C bin/packages/${{ matrix.arch }}/nikki-rs .
           mkdir -p public/${{ matrix.branch }}/${{ matrix.arch }}
-          mv bin/packages/${{ matrix.arch }}/nikki public/${{ matrix.branch }}/${{ matrix.arch }}
-          tar -c -z -f feed_nikki_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz public/${{ matrix.branch }}/${{ matrix.arch }}
+          mv bin/packages/${{ matrix.arch }}/nikki-rs public/${{ matrix.branch }}/${{ matrix.arch }}
+          tar -c -z -f feed_nikki_rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz public/${{ matrix.branch }}/${{ matrix.arch }}
 
       - if: github.event_name == 'push' && startsWith(github.ref_name, 'v')
         name: release
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            nikki_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz
+            nikki-rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz
 
       - name: upload
         uses: actions/upload-artifact@v7
         with:
-          name: feed_nikki_${{ matrix.arch }}-${{ matrix.branch }}
-          path: feed_nikki_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz
+          name: feed_nikki_rs_${{ matrix.arch }}-${{ matrix.branch }}
+          path: feed_nikki_rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz
 
   feed:
     needs: release
@@ -99,18 +99,18 @@ jobs:
       - name: download
         uses: actions/download-artifact@v8
         with:
-          pattern: feed_nikki_*
+          pattern: feed_nikki_rs_*
           merge-multiple: true
       
       - name: uncompress
         run: |
-          for file in feed_nikki_*.tar.gz; do tar -x -z -f "$file"; done
+          for file in feed_nikki_rs_*.tar.gz; do tar -x -z -f "$file"; done
       
       - name: prepare
         run: |
           echo "${{ secrets.KEY_BUILD_PUB }}" > public/key-build.pub
           echo "${{ secrets.PUBLIC_KEY }}" > public/public-key.pem
-          tree --dirsfirst --sort name -P '*.apk|*.ipk' --prune --noreport -H "" -T "Nikki's Feed" --charset utf-8 -o public/index.html public
+          tree --dirsfirst --sort name -P '*.apk|*.ipk' --prune --noreport -H "" -T "Nikki RS Feed" --charset utf-8 -o public/index.html public
           sed -i '/<p class="VERSION">/,/<\/p>/d' public/index.html
 
       - name: feed

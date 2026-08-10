@@ -32,7 +32,7 @@ esac
 
 # feed url
 repository_url="https://nikkinikki.pages.dev"
-feed_url="$repository_url/$branch/$arch/nikki"
+feed_url="$repository_url/$branch/$arch/nikki-rs"
 
 if [ -x "/bin/opkg" ]; then
 	# update feeds
@@ -43,19 +43,19 @@ if [ -x "/bin/opkg" ]; then
 	languages=$(opkg list-installed luci-i18n-base-* | cut -d ' ' -f 1 | cut -d '-' -f 4-)
 	# get latest version
 	echo "get latest version"
-	wget -O nikki.version $feed_url/index.json
+	wget -O nikki-rs.version $feed_url/index.json
 	# install ipks
 	echo "install ipks"
-	eval "$(jsonfilter -i nikki.version -e "mihomo_meta_version=@['packages']['mihomo-meta']" -e "nikki_version=@['packages']['nikki']" -e "luci_app_nikki_version=@['packages']['luci-app-nikki']")"
-	opkg install "$feed_url/mihomo-meta_${mihomo_meta_version}_${arch}.ipk"
-	opkg install "$feed_url/nikki_${nikki_version}_${arch}.ipk"
-	opkg install "$feed_url/luci-app-nikki_${luci_app_nikki_version}_all.ipk"
+	eval "$(jsonfilter -i nikki-rs.version -e "clash_rs_version=@['packages']['clash-rs']" -e "nikki_rs_version=@['packages']['nikki-rs']" -e "luci_app_nikki_rs_version=@['packages']['luci-app-nikki-rs']")"
+	opkg install "$feed_url/clash-rs_${clash_rs_version}_${arch}.ipk"
+	opkg install "$feed_url/nikki-rs_${nikki_rs_version}_${arch}.ipk"
+	opkg install "$feed_url/luci-app-nikki-rs_${luci_app_nikki_rs_version}_all.ipk"
 	for lang in $languages; do
-		lang_version=$(jsonfilter -i nikki.version -e "@['packages']['luci-i18n-nikki-${lang}']")
-		opkg install "$feed_url/luci-i18n-nikki-${lang}_${lang_version}_all.ipk"
+		lang_version=$(jsonfilter -i nikki-rs.version -e "@['packages']['luci-i18n-nikki-rs-${lang}']")
+		opkg install "$feed_url/luci-i18n-nikki-rs-${lang}_${lang_version}_all.ipk"
 	done
 	
-	rm -f nikki.version
+	rm -f nikki-rs.version
 elif [ -x "/usr/bin/apk" ]; then
 	# update feeds
 	echo "update feeds"
@@ -65,9 +65,9 @@ elif [ -x "/usr/bin/apk" ]; then
 	languages=$(apk list --installed --manifest luci-i18n-base-* | cut -d ' ' -f 1 | cut -d '-' -f 4-)
 	# install apks from remote repository
 	echo "install apks from remote repository"
-	apk add --allow-untrusted -X $feed_url/packages.adb mihomo-meta nikki luci-app-nikki
+	apk add --allow-untrusted -X $feed_url/packages.adb clash-rs nikki-rs luci-app-nikki-rs
 	for lang in $languages; do
-		apk add --allow-untrusted -X $feed_url/packages.adb "luci-i18n-nikki-${lang}"
+		apk add --allow-untrusted -X $feed_url/packages.adb "luci-i18n-nikki-rs-${lang}"
 	done
 fi
 

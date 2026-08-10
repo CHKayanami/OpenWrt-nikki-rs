@@ -1,0 +1,12 @@
+/etc/nikki-rs/profiles/
+/etc/nikki-rs/subscriptions/
+/etc/nikki-rs/mixin.yaml
+/etc/nikki-rs/providers/rule/
+/etc/nikki-rs/providers/proxy/
+/etc/nikki-rs/run/providers/rule/
+/etc/nikki-rs/run/providers/proxy/
+/etc/nikki-rs/nftables/proxy_whitelist.txt
+/etc/nikki-rs/nftables/proxy_whitelist6.txt
+
+
+
