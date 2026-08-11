@@ -22,13 +22,6 @@ jobs:
           - aarch64_cortex-a72
           - aarch64_cortex-a76
           - aarch64_generic
-          - mips_24kc
-          - mips_4kec
-          - mips_mips32
-          - mipsel_24kc
-          - mipsel_24kc_24kf
-          - mipsel_74kc
-          - mipsel_mips32
           - riscv64_riscv64
           - riscv64_generic
           - i386_pentium4
@@ -38,10 +31,6 @@ jobs:
           - openwrt-25.12
           - SNAPSHOT
         exclude:
-          - arch: mips_4kec
-            branch: openwrt-25.12
-          - arch: mips_4kec
-            branch: SNAPSHOT
           - arch: riscv64_riscv64
             branch: openwrt-25.12
           - arch: riscv64_riscv64

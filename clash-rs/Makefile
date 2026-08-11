@@ -5,6 +5,8 @@ PKG_VERSION:=0.1.6
 PKG_RELEASE:=1
 PKG_HASH:=skip
 
+PKG_ARCH_ONLY:=x86_64 aarch64 arm riscv64 i386 i686
+
 # 架构映射表
 ifneq ($(findstring x86_64,$(ARCH)),)
   CLASH_TARGET:=x86_64-unknown-linux-musl
@@ -12,12 +14,6 @@ else ifneq ($(findstring aarch64,$(ARCH)),)
   CLASH_TARGET:=aarch64-unknown-linux-musl
 else ifneq ($(findstring arm,$(ARCH)),)
   CLASH_TARGET:=armv7-unknown-linux-musleabihf
-else ifneq ($(findstring mipsel,$(ARCH)),)
-  CLASH_TARGET:=mipsel-unknown-linux-musl
-else ifneq ($(findstring mips64,$(ARCH)),)
-  # mips64 unsupported
-else ifneq ($(findstring mips,$(ARCH)),)
-  CLASH_TARGET:=mips-unknown-linux-musl
 else ifneq ($(findstring riscv64,$(ARCH)),)
   CLASH_TARGET:=riscv64gc-unknown-linux-musl
 else ifneq ($(findstring i386,$(ARCH)),)
