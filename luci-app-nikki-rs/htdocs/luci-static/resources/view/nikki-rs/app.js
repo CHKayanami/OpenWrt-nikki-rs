@@ -3,7 +3,7 @@
 'require view';
 'require uci';
 'require poll';
-'require tools.nikki as nikki';
+'require tools.nikki-rs as nikki';
 
 function renderStatus(running) {
     return updateStatus(E('input', { id: 'core_status', style: 'border: unset; font-style: italic; font-weight: bold;', readonly: '' }), running);

@@ -4,7 +4,7 @@
 'require uci';
 'require fs';
 'require poll';
-'require tools.nikki as nikki';
+'require tools.nikki-rs as nikki';
 
 return view.extend({
     load: function () {

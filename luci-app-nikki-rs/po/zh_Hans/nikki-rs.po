@@ -628,10 +628,10 @@ msgstr "名称"
 msgid "Nameserver"
 msgstr "DNS 服务器"
 
-#: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/app.js:38
-#: applications/luci-app-nikki/root/usr/share/luci/menu.d/luci-app-nikki.json:3
-msgid "Nikki"
-msgstr "Nikki"
+#: htdocs/luci-static/resources/view/nikki-rs/app.js:38
+#: root/usr/share/luci/menu.d/luci-app-nikki-rs.json:3
+msgid "Nikki RS"
+msgstr "Nikki RS"
 
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:570
 msgid "No Resolve"

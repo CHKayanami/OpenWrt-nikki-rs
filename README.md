@@ -2,7 +2,7 @@
 
 English | [中文](README.zh.md)
 
-# Nikki
+# Nikki RS
 
 Transparent Proxy with clash-rs on OpenWrt.
 
@@ -28,7 +28,7 @@ Transparent Proxy with clash-rs on OpenWrt.
 
 ```shell
 # only needs to be run once
-wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/feed.sh | ash
+wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/feed.sh | ash
 ```
 
 2. Install
@@ -48,13 +48,13 @@ apk add luci-i18n-nikki-rs-zh-cn
 ### B. Install From Release
 
 ```shell
-wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/install.sh | ash
+wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/install.sh | ash
 ```
 
 ## Uninstall & Reset
 
 ```shell
-wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/uninstall.sh | ash
+wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/uninstall.sh | ash
 ```
 
 ## How To Use
@@ -75,7 +75,7 @@ Note that the steps above may change base on config.
 
 ```shell
 # add feed
-echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >> "feeds.conf.default"
+echo "src-git nikki-rs https://github.com/CHKayanami/OpenWrt-nikki-rs.git;main" >> "feeds.conf.default"
 # update & install feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a

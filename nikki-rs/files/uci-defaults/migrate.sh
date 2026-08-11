@@ -112,13 +112,13 @@ proxy_transparent_proxy=$(uci -q get nikki-rs.proxy.transparent_proxy); [ -n "$p
 
 section_routing=$(uci -q get nikki-rs.routing); [ -z "$section_routing" ] && {
 	uci set nikki-rs.routing=routing
-	uci set nikki-rs.routing.tproxy_fw_mark=0x80
-	uci set nikki-rs.routing.tun_fw_mark=0x81
-	uci set nikki-rs.routing.tproxy_rule_pref=1024
-	uci set nikki-rs.routing.tun_rule_pref=1025
-	uci set nikki-rs.routing.tproxy_route_table=80
-	uci set nikki-rs.routing.tun_route_table=81
-	uci set nikki-rs.routing.cgroup_id=0x12061206
+	uci set nikki-rs.routing.tproxy_fw_mark=0x82
+	uci set nikki-rs.routing.tun_fw_mark=0x83
+	uci set nikki-rs.routing.tproxy_rule_pref=1026
+	uci set nikki-rs.routing.tun_rule_pref=1027
+	uci set nikki-rs.routing.tproxy_route_table=82
+	uci set nikki-rs.routing.tun_route_table=83
+	uci set nikki-rs.routing.cgroup_id=0x12071207
 	uci set nikki-rs.routing.cgroup_name=nikki-rs
 }
 
@@ -186,14 +186,15 @@ proxy_reserved_ip6=$(uci -q get nikki-rs.proxy.reserved_ip6); [ -z "$proxy_reser
 
 proxy_bypass_china_mainland_ip=$(uci -q get nikki-rs.proxy.bypass_china_mainland_ip)
 proxy_bypass_china_mainland_ip6=$(uci -q get nikki-rs.proxy.bypass_china_mainland_ip6)
-[ -z "$proxy_bypass_china_mainland_ip6" ] && uci set nikki-rs.proxy.bypass_china_mainland_ip6=$proxy_bypass_china_mainland_ip
+[ -n "$proxy_bypass_china_mainland_ip" ] && [ -z "$proxy_bypass_china_mainland_ip6" ] && uci set nikki-rs.proxy.bypass_china_mainland_ip6="$proxy_bypass_china_mainland_ip"
 
 routing_tproxy_fw_mask=$(uci -q get nikki-rs.routing.tproxy_fw_mask); [ -z "$routing_tproxy_fw_mask" ] && uci set nikki-rs.routing.tproxy_fw_mask=0xFF
 routing_tun_fw_mask=$(uci -q get nikki-rs.routing.tun_fw_mask); [ -z "$routing_tun_fw_mask" ] && uci set nikki-rs.routing.tun_fw_mask=0xFF
 
 section_procd=$(uci -q get nikki-rs.procd); [ -z "$section_procd" ] && {
 	uci set nikki-rs.procd=procd
-	uci set nikki-rs.procd.fast_reload=$(uci -q get nikki-rs.config.fast_reload)
+	fast_reload=$(uci -q get nikki-rs.config.fast_reload)
+	[ -n "$fast_reload" ] && uci set nikki-rs.procd.fast_reload="$fast_reload"
 	uci del nikki-rs.config.fast_reload
 }
 

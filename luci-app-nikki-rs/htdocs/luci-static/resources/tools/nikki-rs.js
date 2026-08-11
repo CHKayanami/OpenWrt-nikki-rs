@@ -122,7 +122,8 @@ return baseclass.extend({
     debugLogPath: debugLogPath,
 
     status: async function () {
-        return (await callRCList('nikki-rs')) ? ['nikki-rs']?.running;
+        const res = await callRCList('nikki-rs');
+        return (res && res['nikki-rs']) ? res['nikki-rs'].running : false;
     },
 
     reload: function () {
@@ -197,7 +198,7 @@ return baseclass.extend({
         });
         const uiName = profile['external-ui-name'];
         const apiListen = profile['external-controller'];
-        const apiSecret = profile['secret'] ?? '';
+        const apiSecret = profile['secret'] || '';
         if (!apiListen) {
             return Promise.reject('API has not been configured');
         }

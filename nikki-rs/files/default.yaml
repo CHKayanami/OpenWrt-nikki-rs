@@ -22,7 +22,6 @@ dns:
   fake-ip-range6: fc00::/18
   fake-ip-filter:
     - "rule-set:geosite-cn"
-    - "rule-set:private"
     - "rule-set:apple-cn"
 
   black-filter: 
@@ -72,20 +71,20 @@ proxy-groups:
   - name: 📹 油管视频
     type: select
     proxies:
-      - 🎯 全球直连
       - 🚀 节点选择
+      - 🎯 全球直连
     include-all: true
   - name: AI
     type: select
     proxies:
-      - 🎯 全球直连
       - 🚀 节点选择
+      - 🎯 全球直连
     include-all: true
   - name: 🇬 谷歌服务
     type: select
     proxies:
-      - 🎯 全球直连
       - 🚀 节点选择
+      - 🎯 全球直连
     include-all: true
   - name: 🍎 苹果服务
     type: select
@@ -127,11 +126,6 @@ rules:
  - RULE-SET,telegramip,📲 电报信息,no-resolve
  - MATCH,🐟 漏网之鱼
 rule-providers:
-  private:
-    type: file
-    behavior: domain
-    format: mrs
-    path: rule_set/fakeip-filter.mrs
   ads:
     type: file
     behavior: domain

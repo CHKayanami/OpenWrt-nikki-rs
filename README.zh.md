@@ -2,7 +2,7 @@
 
 中文 | [English](README.md)
 
-# Nikki
+# Nikki RS
 
 在 OpenWrt 上使用 clash-rs 进行透明代理。
 
@@ -28,7 +28,7 @@
 
 ```shell
 # 只需运行一次
-wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/feed.sh | ash
+wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/feed.sh | ash
 ```
 
 2. 安装
@@ -48,13 +48,13 @@ apk add luci-i18n-nikki-rs-zh-cn
 ### B. 从发行版安装
 
 ```shell
-wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/install.sh | ash
+wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/install.sh | ash
 ```
 
 ## 卸载并重置
 
 ```shell
-wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/uninstall.sh | ash
+wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/uninstall.sh | ash
 ```
 
 ## 如何使用
@@ -75,7 +75,7 @@ wget -O - https://github.com/nikkinikki-org/OpenWrt-nikki/raw/refs/heads/main/un
 
 ```shell
 # 添加源
-echo "src-git nikki https://github.com/nikkinikki-org/OpenWrt-nikki.git;main" >> "feeds.conf.default"
+echo "src-git nikki-rs https://github.com/CHKayanami/OpenWrt-nikki-rs.git;main" >> "feeds.conf.default"
 # 更新并安装源
 ./scripts/feeds update -a
 ./scripts/feeds install -a

@@ -17,7 +17,7 @@ const methods = {
 					process.close();
 				}
 			} else if (system('command -v apk') == 0) {
-				process = popen('apk list -I luci-app-nikki-rs | cut -d " " -f 1 | cut -d "-" -f 4');
+				process = popen('apk list -I luci-app-nikki-rs | cut -d " " -f 1 | cut -d "-" -f 5');
 				if (process) {
 					app = trim(process.read('all'));
 					process.close();

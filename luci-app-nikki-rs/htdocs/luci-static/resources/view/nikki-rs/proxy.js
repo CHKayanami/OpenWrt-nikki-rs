@@ -4,7 +4,7 @@
 'require uci';
 'require network';
 'require tools.widgets as widgets';
-'require tools.nikki as nikki';
+'require tools.nikki-rs as nikki';
 
 return view.extend({
     load: function () {

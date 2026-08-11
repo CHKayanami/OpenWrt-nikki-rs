@@ -6,7 +6,7 @@
 'require network';
 'require poll';
 'require tools.widgets as widgets';
-'require tools.nikki as nikki';
+'require tools.nikki-rs as nikki';
 
 function isIP(host) {
     if (!host) return false;

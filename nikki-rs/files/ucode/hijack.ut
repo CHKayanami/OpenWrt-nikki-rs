@@ -5,7 +5,7 @@
 
 	import { cursor } from 'uci';
 	import { connect } from 'ubus';
-	import { uci_bool, uci_array, get_cgroups_version, get_users, get_groups, get_cgroups, load_profile, load_ip_list } from '/etc/nikki/ucode/include.uc';
+	import { uci_bool, uci_array, get_cgroups_version, get_users, get_groups, get_cgroups, load_profile, load_ip_list } from '/etc/nikki-rs/ucode/include.uc';
 
 	const fw4 = require('fw4');
 
@@ -27,9 +27,9 @@
 	let fake_ip_range;
 	let fake_ip6_range;
 
-	const redirect_listener_name = uci.get('nikki', 'core', 'redirect_listener_name');
-	const tproxy_listener_name = uci.get('nikki', 'core', 'tproxy_listener_name');
-	const tun_listener_name = uci.get('nikki', 'core', 'tun_listener_name');
+	const redirect_listener_name = uci.get('nikki-rs', 'core', 'redirect_listener_name');
+	const tproxy_listener_name = uci.get('nikki-rs', 'core', 'tproxy_listener_name');
+	const tun_listener_name = uci.get('nikki-rs', 'core', 'tun_listener_name');
 
 	if (profile['redir-port']) {
 		redir_port = profile['redir-port']
@@ -66,19 +66,19 @@
 		fake_ip6_range = profile['dns']['fake-ip-range6'];
 	}
 
-	uci.load('nikki');
+	uci.load('nikki-rs');
 
-	const tcp_mode = uci.get('nikki', 'proxy', 'tcp_mode');
-	const udp_mode = uci.get('nikki', 'proxy', 'udp_mode');
-	const ipv4_dns_hijack = uci_bool(uci.get('nikki', 'proxy', 'ipv4_dns_hijack'));
-	const ipv6_dns_hijack = uci_bool(uci.get('nikki', 'proxy', 'ipv6_dns_hijack'));
-	const ipv4_proxy = uci_bool(uci.get('nikki', 'proxy', 'ipv4_proxy'));
-	const ipv6_proxy = uci_bool(uci.get('nikki', 'proxy', 'ipv6_proxy'));
-	const fake_ip_ping_hijack = uci_bool(uci.get('nikki', 'proxy', 'fake_ip_ping_hijack'));
+	const tcp_mode = uci.get('nikki-rs', 'proxy', 'tcp_mode');
+	const udp_mode = uci.get('nikki-rs', 'proxy', 'udp_mode');
+	const ipv4_dns_hijack = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv4_dns_hijack'));
+	const ipv6_dns_hijack = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv6_dns_hijack'));
+	const ipv4_proxy = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv4_proxy'));
+	const ipv6_proxy = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv6_proxy'));
+	const fake_ip_ping_hijack = uci_bool(uci.get('nikki-rs', 'proxy', 'fake_ip_ping_hijack'));
 
-	const router_proxy = uci_bool(uci.get('nikki', 'proxy', 'router_proxy'));
+	const router_proxy = uci_bool(uci.get('nikki-rs', 'proxy', 'router_proxy'));
 	const router_access_control = [];
-	uci.foreach('nikki', 'router_access_control', (access_control) => {
+	uci.foreach('nikki-rs', 'router_access_control', (access_control) => {
 		access_control['enabled'] = uci_bool(access_control['enabled']);
 		access_control['user'] = filter(uci_array(access_control['user']), (x) => index(users, x) >= 0);
 		access_control['group'] = filter(uci_array(access_control['group']), (x) => index(groups, x) >= 0);
@@ -90,8 +90,8 @@
 		}
 	});
 
-	const lan_proxy = uci_bool(uci.get('nikki', 'proxy', 'lan_proxy'));
-	const lan_inbound_interface = uci_array(uci.get('nikki', 'proxy', 'lan_inbound_interface'));
+	const lan_proxy = uci_bool(uci.get('nikki-rs', 'proxy', 'lan_proxy'));
+	const lan_inbound_interface = uci_array(uci.get('nikki-rs', 'proxy', 'lan_inbound_interface'));
 	const lan_inbound_device = [];
 	for (let interface in lan_inbound_interface) {
 		const status = ubus.call('network.interface', 'status', { 'interface': interface });
@@ -101,7 +101,7 @@
 		}
 	}
 	const lan_access_control = [];
-	uci.foreach('nikki', 'lan_access_control', (access_control) => {
+	uci.foreach('nikki-rs', 'lan_access_control', (access_control) => {
 		access_control['enabled'] = uci_bool(access_control['enabled']);
 		access_control['ip'] = uci_array(access_control['ip']);
 		access_control['ip6'] = uci_array(access_control['ip6']);
@@ -113,11 +113,11 @@
 		}
 	});
 
-	const reserved_ip = uci_array(uci.get('nikki', 'proxy', 'reserved_ip'));
-	const reserved_ip6 = uci_array(uci.get('nikki', 'proxy', 'reserved_ip6'));
-	const bypass_dscp = uci_array(uci.get('nikki', 'proxy', 'bypass_dscp'));
+	const reserved_ip = uci_array(uci.get('nikki-rs', 'proxy', 'reserved_ip'));
+	const reserved_ip6 = uci_array(uci.get('nikki-rs', 'proxy', 'reserved_ip6'));
+	const bypass_dscp = uci_array(uci.get('nikki-rs', 'proxy', 'bypass_dscp'));
 	const bypass_fwmark = [];
-	for (let fwmark in uci_array(uci.get('nikki', 'proxy', 'bypass_fwmark'))) {
+	for (let fwmark in uci_array(uci.get('nikki-rs', 'proxy', 'bypass_fwmark'))) {
 		let mark;
 		let mask = '0xFFFFFFFF';
 		if (index(fwmark, '/') >= 0) {
@@ -129,24 +129,24 @@
 		}
 		push(bypass_fwmark, { mark: mark, mask: mask });
 	}
-	const only_proxy_fake_ip_and_whitelist = uci_bool(uci.get('nikki', 'proxy', 'only_proxy_fake_ip_and_whitelist'));
-	const bypass_china_mainland_ip = uci_bool(uci.get('nikki', 'proxy', 'bypass_china_mainland_ip'));
-	const bypass_china_mainland_ip6 = uci_bool(uci.get('nikki', 'proxy', 'bypass_china_mainland_ip6'));
+	const only_proxy_fake_ip_and_whitelist = uci_bool(uci.get('nikki-rs', 'proxy', 'only_proxy_fake_ip_and_whitelist'));
+	const bypass_china_mainland_ip = uci_bool(uci.get('nikki-rs', 'proxy', 'bypass_china_mainland_ip'));
+	const bypass_china_mainland_ip6 = uci_bool(uci.get('nikki-rs', 'proxy', 'bypass_china_mainland_ip6'));
 
-	const china_ip_list = bypass_china_mainland_ip ? load_ip_list('/etc/nikki/nftables/geoip_cn.txt') : [];
-	const china_ip6_list = bypass_china_mainland_ip6 ? load_ip_list('/etc/nikki/nftables/geoip6_cn.txt') : [];
-	const proxy_whitelist_list = load_ip_list('/etc/nikki/nftables/proxy_whitelist.txt');
-	const proxy_whitelist6_list = load_ip_list('/etc/nikki/nftables/proxy_whitelist6.txt');
-	const proxy_tcp_dport = split((uci.get('nikki', 'proxy', 'proxy_tcp_dport') ?? '0-65535'), ' ');
-	const proxy_udp_dport = split((uci.get('nikki', 'proxy', 'proxy_udp_dport') ?? '0-65535'), ' ');
+	const china_ip_list = bypass_china_mainland_ip ? load_ip_list('/etc/nikki-rs/nftables/geoip_cn.txt') : [];
+	const china_ip6_list = bypass_china_mainland_ip6 ? load_ip_list('/etc/nikki-rs/nftables/geoip6_cn.txt') : [];
+	const proxy_whitelist_list = load_ip_list('/etc/nikki-rs/nftables/proxy_whitelist.txt');
+	const proxy_whitelist6_list = load_ip_list('/etc/nikki-rs/nftables/proxy_whitelist6.txt');
+	const proxy_tcp_dport = split((uci.get('nikki-rs', 'proxy', 'proxy_tcp_dport') ?? '0-65535'), ' ');
+	const proxy_udp_dport = split((uci.get('nikki-rs', 'proxy', 'proxy_udp_dport') ?? '0-65535'), ' ');
 
-	const cgroup_id = uci.get('nikki', 'routing', 'cgroup_id') ?? '0x12061206';
-	const cgroup_name = uci.get('nikki', 'routing', 'cgroup_name') ?? 'nikki';
-	const tproxy_fw_mark = uci.get('nikki', 'routing', 'tproxy_fw_mark') ?? '0x80';
-	const tproxy_fw_mask = uci.get('nikki', 'routing', 'tproxy_fw_mask') ?? '0xFF';
+	const cgroup_id = uci.get('nikki-rs', 'routing', 'cgroup_id') ?? '0x12071207';
+	const cgroup_name = uci.get('nikki-rs', 'routing', 'cgroup_name') ?? 'nikki-rs';
+	const tproxy_fw_mark = uci.get('nikki-rs', 'routing', 'tproxy_fw_mark') ?? '0x82';
+	const tproxy_fw_mask = uci.get('nikki-rs', 'routing', 'tproxy_fw_mask') ?? '0xFF';
 	const tproxy_fw_umask = fw4.hex(~tproxy_fw_mask & 0xFFFFFFFF);
-	const tun_fw_mark = uci.get('nikki', 'routing', 'tun_fw_mark') ?? '0x81';
-	const tun_fw_mask = uci.get('nikki', 'routing', 'tun_fw_mask') ?? '0xFF';
+	const tun_fw_mark = uci.get('nikki-rs', 'routing', 'tun_fw_mark') ?? '0x83';
+	const tun_fw_mask = uci.get('nikki-rs', 'routing', 'tun_fw_mask') ?? '0xFF';
 	const tun_fw_umask = fw4.hex(~tun_fw_mask & 0xFFFFFFFF);
 
 	const dns_hijack_nfproto = [];
@@ -174,7 +174,7 @@
 	}
 -%}
 
-table inet nikki {
+table inet nikki-rs {
 	set dns_hijack_nfproto {
 		type nf_proto
 		flags interval

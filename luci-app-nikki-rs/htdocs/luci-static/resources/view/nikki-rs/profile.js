@@ -2,7 +2,7 @@
 'require form';
 'require view';
 'require uci';
-'require tools.nikki as nikki';
+'require tools.nikki-rs as nikki';
 
 return view.extend({
     load: function () {

@@ -9,10 +9,16 @@ init=$(uci -q get nikki-rs.config.init); [ -z "$init" ] && return
 random=$(awk 'BEGIN{srand(); printf "%06d", int(rand() * 1000000)}')
 
 # set nikki-rs.mixin.api_secret
-uci set nikki-rs.mixin.api_secret="$random"
+if [ -z "$(uci -q get nikki-rs.mixin.api_secret)" ]; then
+	uci set nikki-rs.mixin.api_secret="$random"
+fi
 
 # set nikki-rs.@authentication[0].password
-uci set nikki-rs.@authentication[0].password="$random"
+if uci -q get nikki-rs.@authentication[0] >/dev/null; then
+	if [ -z "$(uci -q get nikki-rs.@authentication[0].password)" ]; then
+		uci set nikki-rs.@authentication[0].password="$random"
+	fi
+fi
 
 # remove nikki-rs.config.init
 uci del nikki-rs.config.init

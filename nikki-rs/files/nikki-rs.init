@@ -314,15 +314,15 @@ service_started() {
 	config_get tun_interval "proxy" "tun_interval" 1
 	## routing config
 	local tproxy_fw_mark tproxy_fw_mask tun_fw_mark tun_fw_mask tproxy_rule_pref tun_rule_pref tproxy_route_table tun_route_table cgroup_id cgroup_name dummy_device
-	config_get tproxy_fw_mark "routing" "tproxy_fw_mark" "0x80"
+	config_get tproxy_fw_mark "routing" "tproxy_fw_mark" "0x82"
 	config_get tproxy_fw_mask "routing" "tproxy_fw_mask" "0xFF"
-	config_get tun_fw_mark "routing" "tun_fw_mark" "0x81"
+	config_get tun_fw_mark "routing" "tun_fw_mark" "0x83"
 	config_get tun_fw_mask "routing" "tun_fw_mask" "0xFF"
-	config_get tproxy_rule_pref "routing" "tproxy_rule_pref" "1024"
-	config_get tun_rule_pref "routing" "tun_rule_pref" "1025"
-	config_get tproxy_route_table "routing" "tproxy_route_table" "80"
-	config_get tun_route_table "routing" "tun_route_table" "81"
-	config_get cgroup_id "routing" "cgroup_id" "0x12061206"
+	config_get tproxy_rule_pref "routing" "tproxy_rule_pref" "1026"
+	config_get tun_rule_pref "routing" "tun_rule_pref" "1027"
+	config_get tproxy_route_table "routing" "tproxy_route_table" "82"
+	config_get tun_route_table "routing" "tun_route_table" "83"
+	config_get cgroup_id "routing" "cgroup_id" "0x12071207"
 	config_get cgroup_name "routing" "cgroup_name" "nikki-rs"
 	config_get dummy_device "routing" "dummy_device" "nikki-rs-dummy"
 	# prepare config
@@ -444,8 +444,8 @@ cleanup() {
 	config_get_bool log_clear_at_stop "log" "clear_at_stop" 0
 	## routing config
 	local tproxy_route_table tun_route_table dummy_device
-	config_get tproxy_route_table "routing" "tproxy_route_table" "80"
-	config_get tun_route_table "routing" "tun_route_table" "81"
+	config_get tproxy_route_table "routing" "tproxy_route_table" "82"
+	config_get tun_route_table "routing" "tun_route_table" "83"
 	config_get dummy_device "routing" "dummy_device" "nikki-rs-dummy"
 	# clear logs if needed
 	if [  "$log_clear_at_stop" = 1 ]; then
