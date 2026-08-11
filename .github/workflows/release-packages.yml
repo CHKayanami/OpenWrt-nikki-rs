@@ -56,6 +56,7 @@ jobs:
           KEY_BUILD: ${{ secrets.KEY_BUILD }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           NO_REFRESH_CHECK: true
+          EXTRA_FEEDS: src-link|nikki-rs|/builder/workspace
 
       - name: compress
         run: |
