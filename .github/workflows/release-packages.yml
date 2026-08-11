@@ -50,19 +50,18 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
-          FEEDNAME: nikki-rs
+          FEEDNAME: nikki_rs
           PACKAGES: clash-rs nikki-rs luci-app-nikki-rs
           INDEX: 1
           KEY_BUILD: ${{ secrets.KEY_BUILD }}
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           NO_REFRESH_CHECK: true
-          EXTRA_FEEDS: src-link|nikki-rs|/builder/workspace
 
       - name: compress
         run: |
-          tar -c -z -f nikki-rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz -C bin/packages/${{ matrix.arch }}/nikki-rs .
+          tar -c -z -f nikki-rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz -C bin/packages/${{ matrix.arch }}/nikki_rs .
           mkdir -p public/${{ matrix.branch }}/${{ matrix.arch }}
-          mv bin/packages/${{ matrix.arch }}/nikki-rs public/${{ matrix.branch }}/${{ matrix.arch }}
+          mv bin/packages/${{ matrix.arch }}/nikki_rs public/${{ matrix.branch }}/${{ matrix.arch }}
           tar -c -z -f feed_nikki_rs_${{ matrix.arch }}-${{ matrix.branch }}.tar.gz public/${{ matrix.branch }}/${{ matrix.arch }}
 
       - if: github.event_name == 'push' && startsWith(github.ref_name, 'v')

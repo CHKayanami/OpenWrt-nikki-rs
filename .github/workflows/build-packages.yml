@@ -46,14 +46,13 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.branch }}
-          FEEDNAME: nikki-rs
+          FEEDNAME: nikki_rs
           PACKAGES: clash-rs nikki-rs luci-app-nikki-rs
           NO_REFRESH_CHECK: true
-          EXTRA_FEEDS: src-link|nikki-rs|/builder/workspace
 
       - name: upload
         uses: actions/upload-artifact@v7
         with:
           name: nikki-rs_${{ matrix.arch }}-${{ matrix.branch }}
-          path: bin/packages/${{ matrix.arch }}/nikki-rs
+          path: bin/packages/${{ matrix.arch }}/nikki_rs
 
