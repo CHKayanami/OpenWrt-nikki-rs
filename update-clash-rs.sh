@@ -8,11 +8,34 @@ MAKEFILE="clash-rs/Makefile"
 INPUT_VER="$1"
 
 echo "🔍 正在检查 $REPO 的最新发布版本..."
-RELEASE_JSON=$(curl -sL "https://api.github.com/repos/${REPO}/releases/latest")
-TAG_NAME=$(echo "$RELEASE_JSON" | grep -o '"tag_name": "[^"]*' | head -n1 | cut -d'"' -f4)
+
+get_release_json() {
+  local json=""
+  local token="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+  if [ -n "$token" ]; then
+    json=$(curl -sL -H "User-Agent: OpenWrt-nikki-build" -H "Authorization: Bearer $token" "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null || true)
+    if [[ "$json" == *'"tag_name"'* ]]; then
+      echo "$json"
+      return 0
+    fi
+  fi
+  curl -sL -H "User-Agent: OpenWrt-nikki-build" "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null || true
+}
+
+RELEASE_JSON=$(get_release_json)
+TAG_NAME=""
+
+if command -v jq >/dev/null 2>&1; then
+  TAG_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name // empty' 2>/dev/null || true)
+fi
+
+if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "null" ]; then
+  TAG_NAME=$(echo "$RELEASE_JSON" | grep -o '"tag_name": "[^"]*' | head -n1 | cut -d'"' -f4 2>/dev/null || true)
+fi
 
 if [ -z "$TAG_NAME" ]; then
-  echo "❌ 获取最新版本失败！"
+  echo "❌ 获取最新版本失败！GitHub API 响应如下："
+  echo "$RELEASE_JSON"
   exit 1
 fi
 
@@ -32,7 +55,7 @@ echo "📥 正在实时下载并计算各架构的 SHA256 哈希值..."
 get_hash() {
   local target="$1"
   local url="https://github.com/${REPO}/releases/download/${TAG_NAME}/clash-rs-minimal-${target}.tar.gz"
-  curl -sL "$url" | sha256sum | awk '{print $1}'
+  curl -sL -H "User-Agent: OpenWrt-nikki-build" "$url" | sha256sum | awk '{print $1}'
 }
 
 HASH_X86_64=$(get_hash "x86_64-unknown-linux-musl")

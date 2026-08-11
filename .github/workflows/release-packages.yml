@@ -7,7 +7,28 @@ on:
       - v*
 
 jobs:
+  prepare:
+    name: prepare clash-rs makefile
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v6
+
+      - name: update clash-rs makefile
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          chmod +x update-clash-rs.sh
+          ./update-clash-rs.sh
+
+      - name: upload clash-rs makefile
+        uses: actions/upload-artifact@v7
+        with:
+          name: clash-rs-makefile
+          path: clash-rs/Makefile
+
   release:
+    needs: prepare
     name: ${{ matrix.arch }}-${{ matrix.branch }} release
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -46,10 +67,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v6
 
-      - name: update clash-rs makefile
-        run: |
-          chmod +x update-clash-rs.sh
-          ./update-clash-rs.sh
+      - name: download clash-rs makefile
+        uses: actions/download-artifact@v8
+        with:
+          name: clash-rs-makefile
+          path: clash-rs
 
       - name: build
         uses: openwrt/gh-action-sdk@main
@@ -119,5 +141,3 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           command: deploy
-
-
