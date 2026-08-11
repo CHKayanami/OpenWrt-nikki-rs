@@ -659,7 +659,7 @@ export function parse_yaml_proxy(str) {
 		const obj = json(str);
 		return obj != null ? [obj] : null;
 	}
-	const tmpfile = '/tmp/nikki_proxy_tmp.yaml';
+	const tmpfile = '/var/run/nikki-rs/proxy_tmp.yaml';
 	writefile(tmpfile, str);
 	const process = popen(`yq -M -p yaml -o json ${tmpfile}`);
 	let result = null;
