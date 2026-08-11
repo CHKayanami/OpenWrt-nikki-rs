@@ -965,6 +965,15 @@ return view.extend({
         linkOption.rmempty = false;
         linkOption.rows = 3;
         linkOption.placeholder = 'anytls://... or vless://...';
+        linkOption.width = '20%';
+        linkOption.textvalue = function (section_id) {
+            var cval = this.cfgvalue(section_id);
+            if (cval == null)
+                cval = this.default;
+            if (cval != null && cval.length > 40)
+                return cval.substring(0, 40) + '…';
+            return cval || '';
+        };
 
         var yamlOption = o.subsection.option(form.TextValue, 'yaml', _('YAML Configuration'));
         yamlOption.rows = 8;
@@ -1011,7 +1020,8 @@ return view.extend({
             var linkFormVal = modalMap.lookupOption('link', section_id)[0].getUIElement(section_id).getValue();
             var yamlEl = modalMap.lookupOption('yaml', section_id)[0].getUIElement(section_id);
             var yamlFormVal = yamlEl.getValue(section_id);
-            var nameFormVal = modalMap.lookupOption('name', section_id)[0].getUIElement(section_id).getValue();
+            var nameEl = modalMap.lookupOption('name', section_id)[0].getUIElement(section_id);
+            var nameFormVal = nameEl.getValue(section_id);
 
             if (linkFormVal && (!yamlFormVal || !yamlFormVal.trim())) {
                 var parsedObj = parseLinkToObject(linkFormVal);
@@ -1019,7 +1029,6 @@ return view.extend({
                     if (nameFormVal && nameFormVal.trim() !== '') {
                         parsedObj.name = nameFormVal.trim();
                     } else if (parsedObj.name) {
-                        var nameEl = nameOption.getUIElement(section_id);
                         if (nameEl) nameEl.setValue(parsedObj.name);
                     }
                     var yamlStr = objectToYaml(parsedObj);

@@ -32,7 +32,7 @@ esac
 
 # feed url
 repository_url="https://openwrt-nikki-rs.alamayachk.workers.dev"
-feed_url="$repository_url/$branch/$arch/nikki-rs"
+feed_url="$repository_url/$branch/$arch/nikki_rs"
 
 if [ -x "/bin/opkg" ]; then
 	# add key
@@ -53,7 +53,7 @@ if [ -x "/bin/opkg" ]; then
 elif [ -x "/usr/bin/apk" ]; then
 	# add key
 	echo "add key"
-	wget -O "/etc/apk/keys/nikki.pem" "$repository_url/public-key.pem"
+	wget -O "/etc/apk/keys/nikki-rs.pem" "$repository_url/public-key.pem"
 	# add feed
 	echo "add feed"
 	if grep -q nikki-rs /etc/apk/repositories.d/customfeeds.list; then

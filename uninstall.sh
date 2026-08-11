@@ -2,6 +2,8 @@
 
 # Nikki's uninstaller
 
+repository_url="https://openwrt-nikki-rs.alamayachk.workers.dev"
+
 # uninstall
 if [ -x "/bin/opkg" ]; then
 	opkg list-installed luci-i18n-nikki-rs-* | cut -d ' ' -f 1 | xargs opkg remove
@@ -27,12 +29,12 @@ if [ -x "/bin/opkg" ]; then
 	if grep -q nikki-rs /etc/opkg/customfeeds.conf; then
 		sed -i '/nikki-rs/d' /etc/opkg/customfeeds.conf
 	fi
-	wget -O "nikki.pub" "https://nikkinikki.pages.dev/key-build.pub"
-	opkg-key remove nikki.pub
-	rm -f nikki.pub
+	wget -O "nikki-rs.pub" "$repository_url/key-build.pub"
+	opkg-key remove nikki-rs.pub
+	rm -f nikki-rs.pub
 elif [ -x "/usr/bin/apk" ]; then
 	if grep -q nikki-rs /etc/apk/repositories.d/customfeeds.list; then
 		sed -i '/nikki-rs/d' /etc/apk/repositories.d/customfeeds.list
 	fi
-	rm -f /etc/apk/keys/nikki.pem
+	rm -f /etc/apk/keys/nikki-rs.pem
 fi
