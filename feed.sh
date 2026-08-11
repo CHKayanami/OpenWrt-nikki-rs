@@ -31,7 +31,7 @@ case "$DISTRIB_RELEASE" in
 esac
 
 # feed url
-repository_url="https://openwrt-nikki-rs.alamayachk.workers.dev"
+repository_url="https://nikki-rs.pages.dev"
 feed_url="$repository_url/$branch/$arch/nikki_rs"
 
 if [ -x "/bin/opkg" ]; then

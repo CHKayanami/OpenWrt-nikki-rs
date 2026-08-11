@@ -2,7 +2,7 @@
 
 # Nikki's uninstaller
 
-repository_url="https://openwrt-nikki-rs.alamayachk.workers.dev"
+repository_url="https://nikki-rs.pages.dev"
 
 # uninstall
 if [ -x "/bin/opkg" ]; then

@@ -127,17 +127,9 @@ jobs:
           tree --dirsfirst --sort name -P '*.apk|*.ipk' --prune --noreport -H "" -T "Nikki RS Feed" --charset utf-8 -o public/index.html public
           sed -i '/<p class="VERSION">/,/<\/p>/d' public/index.html
 
-      - name: generate wrangler.toml
-        run: |
-          cat << 'EOF' > wrangler.toml
-          name = "openwrt-nikki-rs"
-          compatibility_date = "2024-09-23"
-          assets = { directory = "./public" }
-          EOF
-
       - name: feed
         uses: cloudflare/wrangler-action@v4
         with:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: deploy
+          command: pages deploy public --project-name=nikki-rs
