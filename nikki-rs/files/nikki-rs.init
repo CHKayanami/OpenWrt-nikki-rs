@@ -83,13 +83,14 @@ start_service() {
 	config_get rlimit_nofile_hard "procd" "rlimit_nofile_hard" "$(ulimit -Hn)"
 	## mixin config
 	### overwrite
-	local overwrite_authentication overwrite_tun_dns_hijack overwrite_fake_ip_filter overwrite_black_filter overwrite_hosts overwrite_dns_nameserver
+	local overwrite_authentication overwrite_tun_dns_hijack overwrite_fake_ip_filter overwrite_black_filter overwrite_hosts overwrite_dns_nameserver ui_internal
 	config_get_bool overwrite_authentication "mixin" "authentication" 0
 	config_get_bool overwrite_tun_dns_hijack "mixin" "tun_dns_hijack" 0
 	config_get_bool overwrite_fake_ip_filter "mixin" "fake_ip_filter" 0
 	config_get_bool overwrite_black_filter "mixin" "black_filter" 0
 	config_get_bool overwrite_hosts "mixin" "hosts" 0
 	config_get_bool overwrite_dns_nameserver "mixin" "dns_nameserver" 0
+	config_get_bool ui_internal "mixin" "ui_internal" 0
 	### mixin file content
 	local mixin_file_content
 	config_get_bool mixin_file_content "mixin" "mixin_file_content" 0
@@ -163,6 +164,9 @@ start_service() {
 		fi
 		if [ "$overwrite_dns_nameserver" = 1 ]; then
 			yq -M -i 'del(.dns.default-nameserver) | del(.dns.proxy-server-nameserver) | del(.dns.direct-nameserver) | del(.dns.nameserver) | del(.dns.fallback) ' "$RUN_PROFILE_PATH"
+		fi
+		if [ "$ui_internal" = 1 ]; then
+			yq -M -i 'del(.external-ui) | del(.external-ui-name) | del(.external-ui-url)' "$RUN_PROFILE_PATH"
 		fi
 
 		local mixin_rule_provider; config_get_bool mixin_rule_provider "mixin" "rule_provider" 0

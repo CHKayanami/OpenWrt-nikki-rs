@@ -22,9 +22,11 @@ config['find-process-mode'] = uci.get('nikki-rs', 'mixin', 'match_process');
 config['interface-name'] = outbound_device;
 config['ipv6'] = uci_bool(uci.get('nikki-rs', 'mixin', 'ipv6'));
 
-config['external-ui'] = uci.get('nikki-rs', 'mixin', 'ui_path');
-config['external-ui-name'] = uci.get('nikki-rs', 'mixin', 'ui_name');
-config['external-ui-url'] = uci.get('nikki-rs', 'mixin', 'ui_url');
+if (!uci_bool(uci.get('nikki-rs', 'mixin', 'ui_internal'))) {
+	config['external-ui'] = uci.get('nikki-rs', 'mixin', 'ui_path');
+	config['external-ui-name'] = uci.get('nikki-rs', 'mixin', 'ui_name');
+	config['external-ui-url'] = uci.get('nikki-rs', 'mixin', 'ui_url');
+}
 config['external-controller'] = uci.get('nikki-rs', 'mixin', 'api_listen');
 config['secret'] = uci.get('nikki-rs', 'mixin', 'api_secret');
 
@@ -188,10 +190,6 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_proxy_server_nameserver_policy'))
 		config['dns']['proxy-server-nameserver-policy'][section.matcher] = uci_array(section.nameserver);
 	});
 }
-
-
-config['profile'] = {};
-config['profile']['store-selected'] = uci_bool(uci.get('nikki-rs', 'mixin', 'selection_cache'));
 
 if (uci_bool(uci.get('nikki-rs', 'mixin', 'rule_provider'))) {
 	config['rule-providers'] = {};

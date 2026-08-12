@@ -755,10 +755,6 @@ msgstr "執行中"
 msgid "SOCKS Port"
 msgstr "SOCKS 埠"
 
-#: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:132
-msgid "Save Proxy Selection"
-msgstr "儲存節點/策略群組選擇"
-
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/log.js:32
 msgid "Scheduled Clear"
 msgstr "定時清除"
@@ -1040,3 +1036,57 @@ msgstr "使用者名稱"
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/app.js:128
 msgid "procd Config"
 msgstr "procd 設定"
+
+msgid "Append Proxy Node"
+msgstr "追加節點"
+
+msgid "Proxy Node Config"
+msgstr "節點設定"
+
+msgid "Edit Proxy Nodes"
+msgstr "編輯節點"
+
+msgid "Node Link"
+msgstr "節點連結"
+
+msgid "YAML Configuration"
+msgstr "YAML 設定"
+
+msgid "Regenerate"
+msgstr "重新生成"
+
+msgid "Automatically generated from link or edit manually"
+msgstr "自動從連結生成，也可手動修改"
+
+msgid "Extracted from link if empty"
+msgstr "留空則從連結提取"
+
+msgid "China Mainland IP Download URL"
+msgstr "中國大陸 IP 下載位址"
+
+msgid "Download China Mainland IP File"
+msgstr "下載中國大陸 IP 檔案"
+
+msgid "China Mainland IP file downloaded successfully."
+msgstr "中國大陸 IP 檔案下載成功。"
+
+msgid "China Mainland IP6 Download URL"
+msgstr "中國大陸 IP6 下載位址"
+
+msgid "Download China Mainland IP6 File"
+msgstr "下載中國大陸 IP6 檔案"
+
+msgid "China Mainland IP6 file downloaded successfully."
+msgstr "中國大陸 IP6 檔案下載成功。"
+
+msgid "Scheduled Update Rule Providers"
+msgstr "定時更新規則集"
+
+msgid "Scheduled Update"
+msgstr "定時更新"
+
+msgid "Scheduled Update Cron"
+msgstr "Cron 表達式"
+
+msgid "Use Internal UI"
+msgstr "使用內置面板"

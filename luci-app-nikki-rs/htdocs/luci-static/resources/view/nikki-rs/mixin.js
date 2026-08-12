@@ -556,11 +556,16 @@ return view.extend({
 
         s.tab('external_control', _('External Control Config'));
 
+        o = s.taboption('external_control', form.Flag, 'ui_internal', _('Use Internal UI'));
+        o.rmempty = false;
+
         o = s.taboption('external_control', form.Value, 'ui_path', _('UI Path'));
         o.placeholder = _('Unmodified');
+        o.depends('ui_internal', '0');
 
         o = s.taboption('external_control', form.Value, 'ui_name', _('UI Name'));
         o.placeholder = _('Unmodified');
+        o.depends('ui_internal', '0');
 
         o = s.taboption('external_control', form.Value, 'ui_url', _('UI Url'));
         o.placeholder = _('Unmodified');
@@ -569,6 +574,7 @@ return view.extend({
         o.value('https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip', 'MetaCubeXD');
         o.value('https://github.com/MetaCubeX/Yacd-meta/archive/refs/heads/gh-pages.zip', 'YACD');
         o.value('https://github.com/MetaCubeX/Razord-meta/archive/refs/heads/gh-pages.zip', 'Razord');
+        o.depends('ui_internal', '0');
 
         o = s.taboption('external_control', form.Value, 'api_listen', _('API Listen'));
         o.datatype = 'ipaddrport(1)';
@@ -577,12 +583,6 @@ return view.extend({
         o = s.taboption('external_control', form.Value, 'api_secret', _('API Secret'));
         o.password = true;
         o.placeholder = _('Unmodified');
-
-        o = s.taboption('external_control', form.ListValue, 'selection_cache', _('Save Proxy Selection'));
-        o.optional = true;
-        o.placeholder = _('Unmodified');
-        o.value('0', _('Disable'));
-        o.value('1', _('Enable'));
 
         s.tab('inbound', _('Inbound Config'));
 

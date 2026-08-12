@@ -745,10 +745,6 @@ msgstr "Запущен"
 msgid "SOCKS Port"
 msgstr "Порт SOCKS"
 
-#: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:132
-msgid "Save Proxy Selection"
-msgstr "Сохранять выбор прокси"
-
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/log.js:32
 msgid "Scheduled Clear"
 msgstr "Запланированная очистка"
@@ -1030,3 +1026,66 @@ msgstr "Имя пользователя"
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/app.js:128
 msgid "procd Config"
 msgstr "Настройки procd"
+
+msgid "Append Proxy Node"
+msgstr "Добавить узлы"
+
+msgid "Proxy Node Config"
+msgstr "Конфигурация узлов"
+
+msgid "Edit Proxy Nodes"
+msgstr "Редактировать узлы"
+
+msgid "Node Link"
+msgstr "Ссылка на узел"
+
+msgid "YAML Configuration"
+msgstr "Конфигурация YAML"
+
+msgid "Regenerate"
+msgstr "Сгенерировать заново"
+
+msgid "Automatically generated from link or edit manually"
+msgstr "Автоматически сгенерировано из ссылки или отредактировано вручную"
+
+msgid "Extracted from link if empty"
+msgstr "Извлекается из ссылки, если пусто"
+
+msgid "China Mainland IP Download URL"
+msgstr "URL для скачивания IP материкового Китая"
+
+msgid "Download China Mainland IP File"
+msgstr "Скачать файл IP материкового Китая"
+
+msgid "China Mainland IP file downloaded successfully."
+msgstr "Файл IP материкового Китая успешно скачан."
+
+msgid "China Mainland IP6 Download URL"
+msgstr "URL для скачивания IPv6 материкового Китая"
+
+msgid "Download China Mainland IP6 File"
+msgstr "Скачать файл IPv6 материкового Китая"
+
+msgid "China Mainland IP6 file downloaded successfully."
+msgstr "Файл IPv6 материкового Китая успешно скачан."
+
+msgid "Only Proxy Fake-IP and Whitelist"
+msgstr "Только прокси Fake-IP и белый список"
+
+msgid "Proxy Whitelist File (IPv4)"
+msgstr "Файл белого списка прокси (IPv4)"
+
+msgid "Proxy Whitelist File (IPv6)"
+msgstr "Файл белого списка прокси (IPv6)"
+
+msgid "Scheduled Update Rule Providers"
+msgstr "Запланированное обновление поставщиков правил"
+
+msgid "Scheduled Update"
+msgstr "Запланированное обновление"
+
+msgid "Scheduled Update Cron"
+msgstr "Cron запланированного обновления"
+
+msgid "Use Internal UI"
+msgstr "Использовать встроенную панель"

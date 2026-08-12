@@ -735,10 +735,6 @@ msgstr ""
 msgid "SOCKS Port"
 msgstr ""
 
-#: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:132
-msgid "Save Proxy Selection"
-msgstr ""
-
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/log.js:32
 msgid "Scheduled Clear"
 msgstr ""
@@ -1019,4 +1015,67 @@ msgstr ""
 
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/app.js:128
 msgid "procd Config"
+msgstr ""
+
+msgid "Only Proxy Fake-IP and Whitelist"
+msgstr ""
+
+msgid "Automatically generated from link or edit manually"
+msgstr ""
+
+msgid "Download China Mainland IP File"
+msgstr ""
+
+msgid "Regenerate"
+msgstr ""
+
+msgid "Append Proxy Node"
+msgstr ""
+
+msgid "Proxy Whitelist File (IPv4)"
+msgstr ""
+
+msgid "China Mainland IP Download URL"
+msgstr ""
+
+msgid "Extracted from link if empty"
+msgstr ""
+
+msgid "China Mainland IP6 file downloaded successfully."
+msgstr ""
+
+msgid "Edit Proxy Nodes"
+msgstr ""
+
+msgid "YAML Configuration"
+msgstr ""
+
+msgid "Proxy Node Config"
+msgstr ""
+
+msgid "Proxy Whitelist File (IPv6)"
+msgstr ""
+
+msgid "China Mainland IP6 Download URL"
+msgstr ""
+
+msgid "Download China Mainland IP6 File"
+msgstr ""
+
+msgid "Scheduled Update Rule Providers"
+msgstr ""
+
+msgid "Scheduled Update Cron"
+msgstr ""
+
+msgid "China Mainland IP file downloaded successfully."
+msgstr ""
+
+msgid "Scheduled Update"
+msgstr ""
+
+msgid "Node Link"
+msgstr ""
+
+msgid "Use Internal UI"
 msgstr ""

@@ -227,6 +227,8 @@ config_clear_at_stop=$(uci -q get nikki-rs.log.clear_at_stop); [ -z "$config_cle
 rule_provider_scheduled_update=$(uci -q get nikki-rs.mixin.rule_provider_scheduled_update); [ -z "$rule_provider_scheduled_update" ] && uci set nikki-rs.mixin.rule_provider_scheduled_update=0
 rule_provider_scheduled_update_cron=$(uci -q get nikki-rs.mixin.rule_provider_scheduled_update_cron); [ -z "$rule_provider_scheduled_update_cron" ] && uci set nikki-rs.mixin.rule_provider_scheduled_update_cron="0 3 * * *"
 
+mixin_ui_internal=$(uci -q get nikki-rs.mixin.ui_internal); [ -z "$mixin_ui_internal" ] && uci set nikki-rs.mixin.ui_internal=0
+
 # commit
 uci commit nikki-rs
 

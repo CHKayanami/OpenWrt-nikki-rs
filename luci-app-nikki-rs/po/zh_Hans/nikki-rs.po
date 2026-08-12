@@ -76,13 +76,13 @@ msgid "App Version"
 msgstr "插件版本"
 
 msgid "Append Proxy Node"
-msgstr "追加自建节点"
+msgstr "追加节点"
 
 msgid "Proxy Node Config"
-msgstr "自建节点配置"
+msgstr "节点配置"
 
 msgid "Edit Proxy Nodes"
-msgstr "编辑自建节点"
+msgstr "编辑节点"
 
 msgid "Node Link"
 msgstr "节点链接"
@@ -431,7 +431,7 @@ msgstr "到期时间"
 
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:95
 msgid "External Control Config"
-msgstr "外部控制配置"
+msgstr "面板配置"
 
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:284
 msgid "Fake-IP Cache"
@@ -801,10 +801,6 @@ msgstr "运行中"
 msgid "SOCKS Port"
 msgstr "SOCKS 端口"
 
-#: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:132
-msgid "Save Proxy Selection"
-msgstr "保存节点/策略组选择"
-
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/log.js:32
 msgid "Scheduled Clear"
 msgstr "定时清空"
@@ -1098,4 +1094,7 @@ msgstr "定时更新"
 #: applications/luci-app-nikki/htdocs/luci-static/resources/view/nikki/mixin.js:945
 msgid "Scheduled Update Cron"
 msgstr "Cron 表达式"
+
+msgid "Use Internal UI"
+msgstr "使用内置面板"
 
