@@ -1,13 +1,11 @@
 # Mixin File
-# You can set any mihomo profile's config at here, it will mixin to the profile.
+# You can set any clash-rs profile's config at here, it will mixin to the profile.
 # Mixin file have lower priority than the LuCI mixin options.
 #
-# Mihomo's Wiki: https://wiki.metacubex.one
+# clash-rs full config example: https://github.com/CHKayanami/clash-rs/blob/master/clash-bin/tests/data/config/full.yaml
 #
 # For example:
 #
-# experimental: # experimental config
-#   dialer-ip4p-convert: false # IP4P support
 # listeners: # overwrite listeners
 #   - name: shadowsocks
 #     type: shadowsocks

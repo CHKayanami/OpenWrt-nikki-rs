@@ -1,108 +1,114 @@
-![GitHub License](https://img.shields.io/github/license/nikkinikki-org/OpenWrt-nikki?style=for-the-badge&logo=github) ![GitHub Tag](https://img.shields.io/github/v/release/nikkinikki-org/OpenWrt-nikki?style=for-the-badge&logo=github) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/nikkinikki-org/OpenWrt-nikki/total?style=for-the-badge&logo=github) ![GitHub Repo stars](https://img.shields.io/github/stars/nikkinikki-org/OpenWrt-nikki?style=for-the-badge&logo=github) [![Telegram](https://img.shields.io/badge/Telegram-gray?style=for-the-badge&logo=telegram)](https://t.me/nikkinikki_org)
+![GitHub License](https://img.shields.io/github/license/CHKayanami/OpenWrt-nikki-rs?style=for-the-badge&logo=github) ![GitHub Tag](https://img.shields.io/github/v/release/CHKayanami/OpenWrt-nikki-rs?style=for-the-badge&logo=github) ![GitHub Downloads](https://img.shields.io/github/downloads/CHKayanami/OpenWrt-nikki-rs/total?style=for-the-badge&logo=github) ![GitHub Stars](https://img.shields.io/github/stars/CHKayanami/OpenWrt-nikki-rs?style=for-the-badge&logo=github)
 
 English | [中文](README.zh.md)
 
 # Nikki RS
 
-Transparent Proxy with clash-rs on OpenWrt.
+**Nikki RS** is a fork of [OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki) for OpenWrt. It integrates [clash-rs](https://github.com/Watfaq/clash-rs), a high-performance proxy core written in Rust, providing a lightweight and high-performance transparent proxy solution for OpenWrt.
+
+---
+
+## Features & Highlights
+
+- **Out of the Box**: Built-in default firewall rules (FakeIP + bypass mainland China) and routing rules to meet most common scenarios. Also supports easy configuration for custom nodes—just configure your proxy node details to get started.
+- **Ultra Lightweight (`clash-rs`)**: Powered by a fork of [clash-rs](https://github.com/CHKayanami/clash-rs) written in Rust, significantly reducing memory and CPU overhead. Compared to the original version, it fixes several bugs, adds new features, and improves stability.
+- **Transparent Proxy**: Native support for Redirect and TPROXY modes, covering both IPv4 and IPv6 traffic routing. (Note: The UI retains TUN mode options, but the default built-in kernel does not include the TUN module. If you need TUN mode, you can replace it with the [official clash-rs kernel](https://github.com/Watfaq/clash-rs) or the author's pre-built [standard release](https://github.com/CHKayanami/clash-rs/releases/tag/latest)).
+- **Rich Protocol Support**: Excellent support for protocols including SS, AnyTLS, Hysteria2 (hy2), and VLESS-Vision-Reality. Uncommon modules such as SSH, WireGuard, Tailscale, Shadowquic, and Tor are removed in the default kernel (can be manually replaced if needed). See [clash-rs](https://github.com/CHKayanami/clash-rs) for details.
+- **Streamlined Configuration**: Adapted to the core features of `clash-rs` by removing unsupported redundant configuration items, making the interface cleaner and easier to use.
+
+---
 
 ## Prerequisites
 
-- OpenWrt >= 24.10
-- Linux Kernel >= 5.13
-- firewall4
+- **OpenWrt** >= 24.10
+- **Linux Kernel** >= 5.13
+- **firewall4** (nftables based)
 
-## Feature
+---
 
-- Transparent Proxy (Redirect/TPROXY/TUN, IPv4 and/or IPv6)
-- Access Control
-- Profile Mixin
-- Profile Editor
-- Scheduled Restart
+## Quick Start
 
-## Install & Update
+### Option A: Install from Feed (Recommended)
 
-### A. Install From Feed (Recommended)
+1. **Add Feed**:
+   ```bash
+   wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/feed.sh | ash
+   ```
 
-1. Add Feed
+2. **Install Packages**:
+   - **opkg**:
+     ```bash
+     opkg update
+     opkg install nikki-rs luci-app-nikki-rs luci-i18n-nikki-rs-zh-cn
+     ```
+   - **apk**:
+     ```bash
+     apk update
+     apk add nikki-rs luci-app-nikki-rs luci-i18n-nikki-rs-zh-cn
+     ```
 
-```shell
-# only needs to be run once
-wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/feed.sh | ash
-```
+### Option B: One-Click Installation from Release
 
-2. Install
-
-```shell
-# you can install from shell or `Software` menu in LuCI
-# for opkg
-opkg install nikki-rs
-opkg install luci-app-nikki-rs
-opkg install luci-i18n-nikki-rs-zh-cn
-# for apk
-apk add nikki-rs
-apk add luci-app-nikki-rs
-apk add luci-i18n-nikki-rs-zh-cn
-```
-
-### B. Install From Release
-
-```shell
+```bash
 wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/install.sh | ash
 ```
 
+### Basic Setup
+
+1. Open OpenWrt LuCI Web Interface.
+2. Navigate to **Services** -> **Nikki RS**.
+3. Import subscription link or configuration profile, and enable the transparent proxy service.
+
+---
+
 ## Uninstall & Reset
 
-```shell
+```bash
 wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/uninstall.sh | ash
 ```
 
-## How To Use
-
-See [Wiki](https://github.com/nikkinikki-org/OpenWrt-nikki/wiki)
-
-## How does it work
-
-1. Mixin and Update profile.
-2. Run clash-rs.
-3. Set scheduled restart.
-4. Set ip rule/route
-5. Generate nftables and apply it.
-
-Note that the steps above may change base on config.
+---
 
 ## Compilation
 
-```shell
-# add feed
+To compile `nikki-rs` in your OpenWrt source code or SDK:
+
+```bash
+# Add feed source
 echo "src-git nikki-rs https://github.com/CHKayanami/OpenWrt-nikki-rs.git;main" >> "feeds.conf.default"
-# update & install feeds
+
+# Update and install feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
-# make package
+
+# Compile package
 make package/luci-app-nikki-rs/compile
 ```
 
-The package files will be found under `bin/packages/your_architecture/nikki-rs`.
+The compiled ipk / apk packages are located in `bin/packages/<arch>/nikki-rs`.
+
+---
 
 ## Dependencies
 
-- ca-bundle
-- curl
-- yq
-- firewall4
-- ip-full
-- kmod-inet-diag
-- kmod-nft-socket
-- kmod-nft-tproxy
-- kmod-tun
-- kmod-dummy
+- `ca-bundle`
+- `curl`
+- `yq`
+- `firewall4`
+- `ip-full`
+- `kmod-inet-diag`
+- `kmod-nft-socket`
+- `kmod-nft-tproxy`
+- `kmod-tun`
+- `kmod-dummy`
 
-## Contributors
+---
 
-[![Contributors](https://contrib.rocks/image?repo=nikkinikki-org/OpenWrt-nikki)](https://github.com/nikkinikki-org/OpenWrt-nikki/graphs/contributors)
+## Credits
 
-## Special Thanks
+Sincere thanks to the contributions from upstream projects and open source developers:
 
-- [@ApoisL](https://github.com/apoiston)
-- [@xishang0128](https://github.com/xishang0128)
+- **[nikki](https://github.com/nikkinikki-org/OpenWrt-nikki)** ([@nikkinikki-org](https://github.com/nikkinikki-org)): For designing and maintaining the OpenWrt LuCI interface and transparent proxy infrastructure.
+- **[clash-rs](https://github.com/Watfaq/clash-rs)**: For developing the exceptional, lightweight, and high-performance Clash proxy core written in Rust.
+
+

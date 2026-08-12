@@ -1,12 +1,17 @@
 {
     "admin/services/nikki-rs": {
         "title": "Nikki RS",
+        "i18n": "nikki-rs",
         "action": {
             "type": "firstchild"
         },
         "depends": {
-            "acl": [ "luci-app-nikki-rs" ],
-            "uci": { "nikki-rs": true }
+            "acl": [
+                "luci-app-nikki-rs"
+            ],
+            "uci": {
+                "nikki-rs": true
+            }
         }
     },
     "admin/services/nikki-rs/config": {
