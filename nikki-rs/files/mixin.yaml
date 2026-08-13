@@ -11,18 +11,18 @@
 #     type: shadowsocks
 #     listen: "::"
 #     port: 12060
-# proxies: # prepend proxies
+# nikki-proxies: # prepend proxies
 #   - name: PROXY
 #     type: ss
 #     server: proxy.example.com
 #     port: 443
 #     cipher: chacha20-ietf-poly1305
 #     password: password
-# proxy-groups: # prepend proxy groups
+# nikki-proxy-groups: # prepend proxy groups
 #   - name: PROXY_GROUP
 #     type: select
 #     proxies:
 #       - PROXY
-# rules: # prepend rules
+# nikki-rules: # prepend rules
 #   - DOMAIN,direct.example.com,DIRECT
 #   - DOMAIN-SUFFIX,proxy.example.com,PROXY
