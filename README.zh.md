@@ -11,6 +11,7 @@
 ## 项目特色
 - **开箱即用**：内置预设防火墙规则（FakeIP + 绕过大陆）与分流策略，满足绝大多数常见使用场景，同时支持便捷的自建节点配置，只需要配置代理节点信息就可开始使用。
 - **极致轻量 (`clash-rs`)**：基于 Rust 编写的 [clash-rs](https://github.com/CHKayanami/clash-rs) Fork 版本核心，极大幅度降低内存占用与 CPU 开销；相比原版修复了多项 Bug、扩充了一些功能并提升了运行稳定性。
+- **配置兼容**：配置绝大部分兼容mihomo，部分配置不支持的也不会报错，只是不会生效，具体配置参考[clash-rs配置](https://github.com/CHKayanami/clash-rs/blob/master/clash-bin/tests/data/config/full.yaml)
 - **透明代理**：原生支持 Redirect 与 TPROXY 模式，完整覆盖 IPv4 与 IPv6 流量分流。（注：界面保留了 TUN 模式选项，但默认依赖的内核未包含 TUN 模块；如需使用 TUN，可更换为 [clash-rs 官方内核](https://github.com/Watfaq/clash-rs) 或作者打包的 [standard 构建版](https://github.com/CHKayanami/clash-rs/releases/tag/latest)）。
 - **丰富协议支持**：良好支持 SS、AnyTLS、Hysteria2 (hy2) 及 VLESS-Vision-Reality 等协议；默认内核移除了 SSH、WireGuard、Tailscale、Shadowquic、Tor 等低频模块（如需使用可手动替换内核）。详见 [clash-rs](https://github.com/CHKayanami/clash-rs) 介绍。
 - **配置精简**：针对 `clash-rs` 的核心特性进行了适配，移除了不支持的冗余配置项，使控制界面更加纯粹易用。
