@@ -181,6 +181,15 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_nameserver'))) {
 		push(config['dns'][section.type], ...uci_array(section.nameserver));
 	})
 }
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_nameserver_policy'))) {
+	config['dns']['nameserver-policy'] = {};
+	uci.foreach('nikki-rs', 'nameserver_policy', (section) => {
+		if (!uci_bool(section.enabled)) {
+			return;
+		}
+		config['dns']['nameserver-policy'][section.matcher] = uci_array(section.nameserver);
+	});
+}
 if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_proxy_server_nameserver_policy'))) {
 	config['dns']['proxy-server-nameserver-policy'] = {};
 	uci.foreach('nikki-rs', 'proxy_server_nameserver_policy', (section) => {
@@ -188,6 +197,29 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_proxy_server_nameserver_policy'))
 			return;
 		}
 		config['dns']['proxy-server-nameserver-policy'][section.matcher] = uci_array(section.nameserver);
+	});
+}
+
+config['sniffer'] = {};
+config['sniffer']['enable'] = uci_bool(uci.get('nikki-rs', 'mixin', 'sniffer'));
+config['sniffer']['force-dns-mapping'] = uci_bool(uci.get('nikki-rs', 'mixin', 'sniffer_sniff_dns_mapping'));
+config['sniffer']['parse-pure-ip'] = uci_bool(uci.get('nikki-rs', 'mixin', 'sniffer_sniff_pure_ip'));
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'sniffer_force_domain_name'))) {
+	config['sniffer']['force-domain'] = uci_array(uci.get('nikki-rs', 'mixin', 'sniffer_force_domain_names'));
+}
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'sniffer_ignore_domain_name'))) {
+	config['sniffer']['skip-domain'] = uci_array(uci.get('nikki-rs', 'mixin', 'sniffer_ignore_domain_names'));
+}
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'sniffer_sniff'))) {
+	config['sniffer']['sniff'] = {};
+	uci.foreach('nikki-rs', 'sniff', (section) => {
+		if (!uci_bool(section.enabled) || !section.protocol) {
+			return;
+		}
+		config['sniffer']['sniff'][section.protocol] = {
+			ports: uci_array(section.port),
+			'override-destination': uci_bool(section.overwrite_destination)
+		};
 	});
 }
 

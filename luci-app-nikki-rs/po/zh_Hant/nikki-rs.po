@@ -1056,3 +1056,43 @@ msgstr "Cron 表達式"
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:559
 msgid "Use Internal UI"
 msgstr "使用內置面板"
+
+msgid "Sniffer Config"
+msgstr "嗅探器設定"
+
+msgid "Sniff Redir-Host"
+msgstr "嗅探 Redir-Host 流量"
+
+msgid "Sniff Pure IP"
+msgstr "嗅探純 IP 連線"
+
+msgid "Overwrite Force Sniff Domain Name"
+msgstr "覆寫強制嗅探的網域名稱"
+
+msgid "Force Sniff Domain Name"
+msgstr "強制嗅探的網域名稱"
+
+msgid "Overwrite Ignore Sniff Domain Name"
+msgstr "覆寫忽略嗅探的網域名稱"
+
+msgid "Ignore Sniff Domain Name"
+msgstr "忽略嗅探的網域名稱"
+
+msgid "Overwrite Sniff By Protocol"
+msgstr "覆寫按協定嗅探"
+
+msgid "Sniff By Protocol"
+msgstr "按協定嗅探"
+
+msgid "Protocol"
+msgstr "協定"
+
+msgid "Port"
+msgstr "通訊埠"
+
+msgid "Overwrite Destination"
+msgstr "將嗅探結果作為連線目標"
+
+msgid "Edit Sniff Protocols"
+msgstr "編輯按協定嗅探"
+

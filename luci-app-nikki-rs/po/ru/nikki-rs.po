@@ -1056,3 +1056,43 @@ msgstr "Cron запланированного обновления"
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:559
 msgid "Use Internal UI"
 msgstr "Использовать встроенную панель"
+
+msgid "Sniffer Config"
+msgstr "Настройки сниффера"
+
+msgid "Sniff Redir-Host"
+msgstr "Определять Redir-Host"
+
+msgid "Sniff Pure IP"
+msgstr "Определять чистые IP"
+
+msgid "Overwrite Force Sniff Domain Name"
+msgstr "Переопределить принудительное определение доменов"
+
+msgid "Force Sniff Domain Name"
+msgstr "Принудительно определять домены"
+
+msgid "Overwrite Ignore Sniff Domain Name"
+msgstr "Переопределить игнорирование определения доменов"
+
+msgid "Ignore Sniff Domain Name"
+msgstr "Игнорировать определение доменов"
+
+msgid "Overwrite Sniff By Protocol"
+msgstr "Переопределить определение по протоколу"
+
+msgid "Sniff By Protocol"
+msgstr "Определять по протоколу"
+
+msgid "Protocol"
+msgstr "Протокол"
+
+msgid "Port"
+msgstr "Порт"
+
+msgid "Overwrite Destination"
+msgstr "Переопределить назначение"
+
+msgid "Edit Sniff Protocols"
+msgstr "Редактировать протоколы сниффера"
+

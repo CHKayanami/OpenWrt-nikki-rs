@@ -229,6 +229,10 @@ rule_provider_scheduled_update_cron=$(uci -q get nikki-rs.mixin.rule_provider_sc
 
 mixin_ui_internal=$(uci -q get nikki-rs.mixin.ui_internal); [ -z "$mixin_ui_internal" ] && uci set nikki-rs.mixin.ui_internal=0
 
+sniffer_force_domain_name=$(uci -q get nikki-rs.mixin.sniffer_force_domain_name); [ -z "$sniffer_force_domain_name" ] && uci set nikki-rs.mixin.sniffer_force_domain_name=0
+sniffer_ignore_domain_name=$(uci -q get nikki-rs.mixin.sniffer_ignore_domain_name); [ -z "$sniffer_ignore_domain_name" ] && uci set nikki-rs.mixin.sniffer_ignore_domain_name=0
+sniffer_sniff=$(uci -q get nikki-rs.mixin.sniffer_sniff); [ -z "$sniffer_sniff" ] && uci set nikki-rs.mixin.sniffer_sniff=0
+
 # commit
 uci commit nikki-rs
 

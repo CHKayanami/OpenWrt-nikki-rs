@@ -1041,3 +1041,43 @@ msgstr ""
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:559
 msgid "Use Internal UI"
 msgstr ""
+
+msgid "Sniffer Config"
+msgstr ""
+
+msgid "Sniff Redir-Host"
+msgstr ""
+
+msgid "Sniff Pure IP"
+msgstr ""
+
+msgid "Overwrite Force Sniff Domain Name"
+msgstr ""
+
+msgid "Force Sniff Domain Name"
+msgstr ""
+
+msgid "Overwrite Ignore Sniff Domain Name"
+msgstr ""
+
+msgid "Ignore Sniff Domain Name"
+msgstr ""
+
+msgid "Overwrite Sniff By Protocol"
+msgstr ""
+
+msgid "Sniff By Protocol"
+msgstr ""
+
+msgid "Protocol"
+msgstr ""
+
+msgid "Port"
+msgstr ""
+
+msgid "Overwrite Destination"
+msgstr ""
+
+msgid "Edit Sniff Protocols"
+msgstr ""
+

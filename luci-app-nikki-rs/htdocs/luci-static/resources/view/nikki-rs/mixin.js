@@ -512,6 +512,107 @@ return view.extend({
 
         s = m.section(form.NamedSection, 'mixin', 'mixin', _('Mixin Option'));
 
+        s.tab('proxy_node', _('Proxy Node Config'));
+
+        o = s.taboption('proxy_node', form.Flag, 'proxy_node', _('Append Proxy Node'));
+        o.rmempty = false;
+
+        o = s.taboption('proxy_node', form.SectionValue, '_proxy_nodes', form.GridSection, 'proxy_node', _('Edit Proxy Nodes'), _('Supported protocols: %s').format('anytls, vless, vmess, ss, trojan, hysteria2 (hy2), tuic'));
+        o.retain = true;
+        o.depends('proxy_node', '1');
+
+        o.subsection.anonymous = true;
+        o.subsection.addremove = true;
+        o.subsection.sortable = true;
+
+        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.default = 1;
+        so.editable = true;
+        so.modalonly = false;
+        so.rmempty = false;
+
+        var nameOption = o.subsection.option(form.Value, 'name', _('Name'));
+        nameOption.placeholder = _('Extracted from link if empty');
+
+        var linkOption = o.subsection.option(form.TextValue, 'link', _('Node Link'), _('Supported protocols: %s').format('anytls, vless, vmess, ss, trojan, hysteria2 (hy2), tuic'));
+        linkOption.rmempty = false;
+        linkOption.rows = 3;
+        linkOption.placeholder = 'anytls://... or vless://...';
+        linkOption.width = '20%';
+        linkOption.textvalue = function (section_id) {
+            var cval = this.cfgvalue(section_id);
+            if (cval == null)
+                cval = this.default;
+            if (cval != null && cval.length > 40)
+                return cval.substring(0, 40) + '…';
+            return cval || '';
+        };
+
+        var yamlOption = o.subsection.option(form.TextValue, 'yaml', _('YAML Configuration'));
+        yamlOption.rows = 8;
+        yamlOption.placeholder = _('Automatically generated from link or edit manually');
+        yamlOption.modalonly = true;
+
+        so = o.subsection.option(form.Button, 'regenerate');
+        so.editable = true;
+        so.inputstyle = 'action';
+        so.inputtitle = _('Regenerate');
+        so.modalonly = false;
+        so.onclick = function (ev, section_id) {
+            var linkVal = uci.get('nikki-rs', section_id, 'link');
+
+            if (!linkVal) {
+                alert(_('Please save the node link first, then click Regenerate.'));
+                return Promise.resolve();
+            }
+
+            var parsedObj = parseLinkToObject(linkVal);
+            if (!parsedObj) {
+                alert(_('Failed to parse node link.'));
+                return Promise.resolve();
+            }
+
+            var nameVal = uci.get('nikki-rs', section_id, 'name');
+            if (nameVal && nameVal.trim() !== '') {
+                parsedObj.name = nameVal.trim();
+            } else if (parsedObj.name) {
+                uci.set('nikki-rs', section_id, 'name', parsedObj.name);
+            }
+
+            var yamlStr = objectToYaml(parsedObj);
+            uci.set('nikki-rs', section_id, 'yaml', yamlStr);
+
+            return uci.save().then(function () {
+                window.location.reload();
+            });
+        };
+
+        var origHandleModalSave = o.subsection.handleModalSave;
+        o.subsection.handleModalSave = function (modalMap, ev) {
+            var section_id = modalMap.section;
+            var linkFormVal = modalMap.lookupOption('link', section_id)[0].getUIElement(section_id).getValue();
+            var yamlEl = modalMap.lookupOption('yaml', section_id)[0].getUIElement(section_id);
+            var yamlFormVal = yamlEl.getValue(section_id);
+            var nameEl = modalMap.lookupOption('name', section_id)[0].getUIElement(section_id);
+            var nameFormVal = nameEl.getValue(section_id);
+
+            if (linkFormVal && (!yamlFormVal || !yamlFormVal.trim())) {
+                var parsedObj = parseLinkToObject(linkFormVal);
+                if (parsedObj) {
+                    if (nameFormVal && nameFormVal.trim() !== '') {
+                        parsedObj.name = nameFormVal.trim();
+                    } else if (parsedObj.name) {
+                        if (nameEl) nameEl.setValue(parsedObj.name);
+                    }
+                    var yamlStr = objectToYaml(parsedObj);
+                    yamlEl.setValue(yamlStr);
+
+                }
+            }
+
+            return origHandleModalSave.apply(this, arguments);
+        };
+
         s.tab('general', _('General Config'));
 
         o = s.taboption('general', form.ListValue, 'log_level', _('Log Level'));
@@ -782,6 +883,25 @@ return view.extend({
 
         so = o.subsection.option(form.DynamicList, 'nameserver', _('Nameserver'));
 
+        o = s.taboption('dns', form.Flag, 'dns_nameserver_policy', _('Overwrite Nameserver Policy'));
+        o.rmempty = false;
+
+        o = s.taboption('dns', form.SectionValue, '_dns_nameserver_policies', form.TableSection, 'nameserver_policy', _('Edit Nameserver Policies'));
+        o.retain = true;
+        o.depends('dns_nameserver_policy', '1');
+
+        o.subsection.addremove = true;
+        o.subsection.anonymous = true;
+        o.subsection.sortable = true;
+
+        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.rmempty = false;
+
+        so = o.subsection.option(form.Value, 'matcher', _('Matcher'));
+        so.rmempty = false;
+
+        so = o.subsection.option(form.DynamicList, 'nameserver', _('Nameserver'));
+
         o = s.taboption('dns', form.Flag, 'dns_proxy_server_nameserver_policy', _('Overwrite Proxy Server Nameserver Policy'));
         o.rmempty = false;
 
@@ -800,6 +920,67 @@ return view.extend({
         so.rmempty = false;
 
         so = o.subsection.option(form.DynamicList, 'nameserver', _('Nameserver'));
+
+        s.tab('sniffer', _('Sniffer Config'));
+
+        o = s.taboption('sniffer', form.ListValue, 'sniffer', _('Enable'));
+        o.optional = true;
+        o.placeholder = _('Unmodified');
+        o.value('0', _('Disable'));
+        o.value('1', _('Enable'));
+
+        o = s.taboption('sniffer', form.ListValue, 'sniffer_sniff_dns_mapping', _('Sniff Redir-Host'));
+        o.optional = true;
+        o.placeholder = _('Unmodified');
+        o.value('0', _('Disable'));
+        o.value('1', _('Enable'));
+
+        o = s.taboption('sniffer', form.ListValue, 'sniffer_sniff_pure_ip', _('Sniff Pure IP'));
+        o.optional = true;
+        o.placeholder = _('Unmodified');
+        o.value('0', _('Disable'));
+        o.value('1', _('Enable'));
+
+        o = s.taboption('sniffer', form.Flag, 'sniffer_force_domain_name', _('Overwrite Force Sniff Domain Name'));
+        o.rmempty = false;
+
+        o = s.taboption('sniffer', form.DynamicList, 'sniffer_force_domain_names', _('Force Sniff Domain Name'));
+        o.retain = true;
+        o.depends('sniffer_force_domain_name', '1');
+
+        o = s.taboption('sniffer', form.Flag, 'sniffer_ignore_domain_name', _('Overwrite Ignore Sniff Domain Name'));
+        o.rmempty = false;
+
+        o = s.taboption('sniffer', form.DynamicList, 'sniffer_ignore_domain_names', _('Ignore Sniff Domain Name'));
+        o.retain = true;
+        o.depends('sniffer_ignore_domain_name', '1');
+
+        o = s.taboption('sniffer', form.Flag, 'sniffer_sniff', _('Overwrite Sniff By Protocol'));
+        o.rmempty = false;
+
+        o = s.taboption('sniffer', form.SectionValue, '_sniffer_sniffs', form.TableSection, 'sniff', _('Edit Sniff Protocols'));
+        o.retain = true;
+        o.depends('sniffer_sniff', '1');
+
+        o.subsection.anonymous = true;
+        o.subsection.addremove = true;
+        o.subsection.sortable = true;
+
+        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.default = 1;
+        so.rmempty = false;
+
+        so = o.subsection.option(form.Value, 'protocol', _('Protocol'));
+        so.rmempty = false;
+        so.value('HTTP');
+        so.value('TLS');
+        so.value('QUIC');
+
+        so = o.subsection.option(form.DynamicList, 'port', _('Port'));
+        so.datatype = 'portrange';
+
+        so = o.subsection.option(form.Flag, 'overwrite_destination', _('Overwrite Destination'));
+        so.rmempty = false;
 
         s.tab('rule', _('Rule Config'));
 
@@ -938,107 +1119,6 @@ return view.extend({
         so.depends('type', /IP-CIDR6?/i);
         so.depends('type', /IP-ASN/i);
         so.depends('type', /GEOIP/i);
-
-        s.tab('proxy_node', _('Proxy Node Config'));
-
-        o = s.taboption('proxy_node', form.Flag, 'proxy_node', _('Append Proxy Node'));
-        o.rmempty = false;
-
-        o = s.taboption('proxy_node', form.SectionValue, '_proxy_nodes', form.GridSection, 'proxy_node', _('Edit Proxy Nodes'), _('Supported protocols: %s').format('anytls, vless, vmess, ss, trojan, hysteria2 (hy2), tuic'));
-        o.retain = true;
-        o.depends('proxy_node', '1');
-
-        o.subsection.anonymous = true;
-        o.subsection.addremove = true;
-        o.subsection.sortable = true;
-
-        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
-        so.default = 1;
-        so.editable = true;
-        so.modalonly = false;
-        so.rmempty = false;
-
-        var nameOption = o.subsection.option(form.Value, 'name', _('Name'));
-        nameOption.placeholder = _('Extracted from link if empty');
-
-        var linkOption = o.subsection.option(form.TextValue, 'link', _('Node Link'), _('Supported protocols: %s').format('anytls, vless, vmess, ss, trojan, hysteria2 (hy2), tuic'));
-        linkOption.rmempty = false;
-        linkOption.rows = 3;
-        linkOption.placeholder = 'anytls://... or vless://...';
-        linkOption.width = '20%';
-        linkOption.textvalue = function (section_id) {
-            var cval = this.cfgvalue(section_id);
-            if (cval == null)
-                cval = this.default;
-            if (cval != null && cval.length > 40)
-                return cval.substring(0, 40) + '…';
-            return cval || '';
-        };
-
-        var yamlOption = o.subsection.option(form.TextValue, 'yaml', _('YAML Configuration'));
-        yamlOption.rows = 8;
-        yamlOption.placeholder = _('Automatically generated from link or edit manually');
-        yamlOption.modalonly = true;
-
-        so = o.subsection.option(form.Button, 'regenerate');
-        so.editable = true;
-        so.inputstyle = 'action';
-        so.inputtitle = _('Regenerate');
-        so.modalonly = false;
-        so.onclick = function (ev, section_id) {
-            var linkVal = uci.get('nikki-rs', section_id, 'link');
-
-            if (!linkVal) {
-                alert(_('Please save the node link first, then click Regenerate.'));
-                return Promise.resolve();
-            }
-
-            var parsedObj = parseLinkToObject(linkVal);
-            if (!parsedObj) {
-                alert(_('Failed to parse node link.'));
-                return Promise.resolve();
-            }
-
-            var nameVal = uci.get('nikki-rs', section_id, 'name');
-            if (nameVal && nameVal.trim() !== '') {
-                parsedObj.name = nameVal.trim();
-            } else if (parsedObj.name) {
-                uci.set('nikki-rs', section_id, 'name', parsedObj.name);
-            }
-
-            var yamlStr = objectToYaml(parsedObj);
-            uci.set('nikki-rs', section_id, 'yaml', yamlStr);
-
-            return uci.save().then(function () {
-                window.location.reload();
-            });
-        };
-
-        var origHandleModalSave = o.subsection.handleModalSave;
-        o.subsection.handleModalSave = function (modalMap, ev) {
-            var section_id = modalMap.section;
-            var linkFormVal = modalMap.lookupOption('link', section_id)[0].getUIElement(section_id).getValue();
-            var yamlEl = modalMap.lookupOption('yaml', section_id)[0].getUIElement(section_id);
-            var yamlFormVal = yamlEl.getValue(section_id);
-            var nameEl = modalMap.lookupOption('name', section_id)[0].getUIElement(section_id);
-            var nameFormVal = nameEl.getValue(section_id);
-
-            if (linkFormVal && (!yamlFormVal || !yamlFormVal.trim())) {
-                var parsedObj = parseLinkToObject(linkFormVal);
-                if (parsedObj) {
-                    if (nameFormVal && nameFormVal.trim() !== '') {
-                        parsedObj.name = nameFormVal.trim();
-                    } else if (parsedObj.name) {
-                        if (nameEl) nameEl.setValue(parsedObj.name);
-                    }
-                    var yamlStr = objectToYaml(parsedObj);
-                    yamlEl.setValue(yamlStr);
-
-                }
-            }
-
-            return origHandleModalSave.apply(this, arguments);
-        };
 
         s.tab('mixin_file_content', _('Mixin File Content'));
 
