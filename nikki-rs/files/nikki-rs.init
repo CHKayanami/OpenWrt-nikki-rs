@@ -83,7 +83,7 @@ start_service() {
 	config_get rlimit_nofile_hard "procd" "rlimit_nofile_hard" "$(ulimit -Hn)"
 	## mixin config
 	### overwrite
-	local overwrite_authentication overwrite_tun_dns_hijack overwrite_fake_ip_filter overwrite_black_filter overwrite_hosts overwrite_dns_nameserver overwrite_dns_nameserver_policy overwrite_dns_proxy_server_nameserver_policy ui_internal overwrite_sniffer_force_domain_name overwrite_sniffer_ignore_domain_name overwrite_sniffer_sniff
+	local overwrite_authentication overwrite_tun_dns_hijack overwrite_fake_ip_filter overwrite_black_filter overwrite_hosts overwrite_dns_nameserver overwrite_dns_nameserver_policy overwrite_dns_proxy_server_nameserver_policy ui_internal overwrite_sniffer_force_domain_name overwrite_sniffer_ignore_domain_name overwrite_sniffer_sniff overwrite_mmdb overwrite_geosite overwrite_asn_mmdb
 	config_get_bool overwrite_authentication "mixin" "authentication" 0
 	config_get_bool overwrite_tun_dns_hijack "mixin" "tun_dns_hijack" 0
 	config_get_bool overwrite_fake_ip_filter "mixin" "fake_ip_filter" 0
@@ -96,6 +96,9 @@ start_service() {
 	config_get_bool overwrite_sniffer_force_domain_name "mixin" "sniffer_force_domain_name" 0
 	config_get_bool overwrite_sniffer_ignore_domain_name "mixin" "sniffer_ignore_domain_name" 0
 	config_get_bool overwrite_sniffer_sniff "mixin" "sniffer_sniff" 0
+	config_get_bool overwrite_mmdb "mixin" "overwrite_mmdb" 0
+	config_get_bool overwrite_geosite "mixin" "overwrite_geosite" 0
+	config_get_bool overwrite_asn_mmdb "mixin" "overwrite_asn_mmdb" 0
 	### mixin file content
 	local mixin_file_content
 	config_get_bool mixin_file_content "mixin" "mixin_file_content" 0
@@ -184,6 +187,15 @@ start_service() {
 		fi
 		if [ "$overwrite_sniffer_sniff" = 1 ]; then
 			yq -M -i 'del(.sniffer.sniff)' "$RUN_PROFILE_PATH"
+		fi
+		if [ "$overwrite_mmdb" = 1 ]; then
+			yq -M -i 'del(.mmdb) | del(.mmdb-download-url)' "$RUN_PROFILE_PATH"
+		fi
+		if [ "$overwrite_geosite" = 1 ]; then
+			yq -M -i 'del(.geosite) | del(.geosite-download-url)' "$RUN_PROFILE_PATH"
+		fi
+		if [ "$overwrite_asn_mmdb" = 1 ]; then
+			yq -M -i 'del(.asn-mmdb) | del(.asn-mmdb-download-url)' "$RUN_PROFILE_PATH"
 		fi
 		if [ "$ui_internal" = 1 ]; then
 			yq -M -i 'del(.external-ui) | del(.external-ui-name) | del(.external-ui-url)' "$RUN_PROFILE_PATH"

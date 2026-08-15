@@ -37,6 +37,19 @@ config['mixed-port'] = uci_int(uci.get('nikki-rs', 'mixin', 'mixed_port'));
 config['redir-port'] = uci_int(uci.get('nikki-rs', 'mixin', 'redir_port'));
 config['tproxy-port'] = uci_int(uci.get('nikki-rs', 'mixin', 'tproxy_port'));
 
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'overwrite_mmdb'))) {
+	config['mmdb'] = uci.get('nikki-rs', 'mixin', 'mmdb') || 'Country.mmdb';
+	config['mmdb-download-url'] = uci.get('nikki-rs', 'mixin', 'mmdb_download_url') || 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/Country.mmdb';
+}
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'overwrite_geosite'))) {
+	config['geosite'] = uci.get('nikki-rs', 'mixin', 'geosite') || 'geosite.dat';
+	config['geosite-download-url'] = uci.get('nikki-rs', 'mixin', 'geosite_download_url') || 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/geosite-lite.dat';
+}
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'overwrite_asn_mmdb'))) {
+	config['asn-mmdb'] = uci.get('nikki-rs', 'mixin', 'asn_mmdb') || 'Country-ASN.mmdb';
+	config['asn-mmdb-download-url'] = uci.get('nikki-rs', 'mixin', 'asn_mmdb_download_url') || 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/Country-ASN.mmdb';
+}
+
 if (uci_bool(uci.get('nikki-rs', 'mixin', 'authentication'))) {
 	config['authentication'] = [];
 	uci.foreach('nikki-rs', 'authentication', (section) => {

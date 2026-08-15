@@ -1081,3 +1081,33 @@ msgstr ""
 msgid "Edit Sniff Protocols"
 msgstr ""
 
+msgid "GEO Data Config"
+msgstr ""
+
+msgid "Overwrite MMDB Config"
+msgstr ""
+
+msgid "MMDB Database File Path (mmdb)"
+msgstr ""
+
+msgid "MMDB Download URL (mmdb-download-url)"
+msgstr ""
+
+msgid "Overwrite GeoSite Config"
+msgstr ""
+
+msgid "GeoSite Database File Path (geosite)"
+msgstr ""
+
+msgid "GeoSite Download URL (geosite-download-url)"
+msgstr ""
+
+msgid "Overwrite ASN Database Config"
+msgstr ""
+
+msgid "ASN Database File Path (asn-mmdb)"
+msgstr ""
+
+msgid "ASN Database Download URL (asn-mmdb-download-url)"
+msgstr ""
+

@@ -982,6 +982,53 @@ return view.extend({
         so = o.subsection.option(form.Flag, 'overwrite_destination', _('Overwrite Destination'));
         so.rmempty = false;
 
+        s.tab('geo', _('GEO Data Config'));
+
+        o = s.taboption('geo', form.Flag, 'overwrite_mmdb', _('Overwrite MMDB Config'));
+        o.rmempty = false;
+
+        o = s.taboption('geo', form.Value, 'mmdb', _('MMDB Database File Path (mmdb)'));
+        o.placeholder = 'Country.mmdb';
+        o.default = 'Country.mmdb';
+        o.rmempty = false;
+        o.depends('overwrite_mmdb', '1');
+
+        o = s.taboption('geo', form.Value, 'mmdb_download_url', _('MMDB Download URL (mmdb-download-url)'));
+        o.placeholder = 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/Country.mmdb';
+        o.default = 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/Country.mmdb';
+        o.rmempty = false;
+        o.depends('overwrite_mmdb', '1');
+
+        o = s.taboption('geo', form.Flag, 'overwrite_geosite', _('Overwrite GeoSite Config'));
+        o.rmempty = false;
+
+        o = s.taboption('geo', form.Value, 'geosite', _('GeoSite Database File Path (geosite)'));
+        o.placeholder = 'geosite.dat';
+        o.default = 'geosite.dat';
+        o.rmempty = false;
+        o.depends('overwrite_geosite', '1');
+
+        o = s.taboption('geo', form.Value, 'geosite_download_url', _('GeoSite Download URL (geosite-download-url)'));
+        o.placeholder = 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/geosite-lite.dat';
+        o.default = 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/geosite-lite.dat';
+        o.rmempty = false;
+        o.depends('overwrite_geosite', '1');
+
+        o = s.taboption('geo', form.Flag, 'overwrite_asn_mmdb', _('Overwrite ASN Database Config'));
+        o.rmempty = false;
+
+        o = s.taboption('geo', form.Value, 'asn_mmdb', _('ASN Database File Path (asn-mmdb)'));
+        o.placeholder = 'Country-ASN.mmdb';
+        o.default = 'Country-ASN.mmdb';
+        o.rmempty = false;
+        o.depends('overwrite_asn_mmdb', '1');
+
+        o = s.taboption('geo', form.Value, 'asn_mmdb_download_url', _('ASN Database Download URL (asn-mmdb-download-url)'));
+        o.placeholder = 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/Country-ASN.mmdb';
+        o.default = 'https://cdn.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-geodata/Country-ASN.mmdb';
+        o.rmempty = false;
+        o.depends('overwrite_asn_mmdb', '1');
+
         s.tab('rule', _('Rule Config'));
 
         o = s.taboption('rule', form.Flag, 'rule_provider', _('Append Rule Provider'));

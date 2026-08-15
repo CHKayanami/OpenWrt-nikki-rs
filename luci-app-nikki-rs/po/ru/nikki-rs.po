@@ -1096,3 +1096,33 @@ msgstr "Переопределить назначение"
 msgid "Edit Sniff Protocols"
 msgstr "Редактировать протоколы сниффера"
 
+msgid "GEO Data Config"
+msgstr "Настройки данных GEO"
+
+msgid "Overwrite MMDB Config"
+msgstr "Переопределить настройки MMDB"
+
+msgid "MMDB Database File Path (mmdb)"
+msgstr "Путь к файлу базы данных MMDB (mmdb)"
+
+msgid "MMDB Download URL (mmdb-download-url)"
+msgstr "URL загрузки MMDB (mmdb-download-url)"
+
+msgid "Overwrite GeoSite Config"
+msgstr "Переопределить настройки GeoSite"
+
+msgid "GeoSite Database File Path (geosite)"
+msgstr "Путь к файлу базы данных GeoSite (geosite)"
+
+msgid "GeoSite Download URL (geosite-download-url)"
+msgstr "URL загрузки GeoSite (geosite-download-url)"
+
+msgid "Overwrite ASN Database Config"
+msgstr "Переопределить настройки базы данных ASN"
+
+msgid "ASN Database File Path (asn-mmdb)"
+msgstr "Путь к файлу базы данных ASN (asn-mmdb)"
+
+msgid "ASN Database Download URL (asn-mmdb-download-url)"
+msgstr "URL загрузки базы данных ASN (asn-mmdb-download-url)"
+

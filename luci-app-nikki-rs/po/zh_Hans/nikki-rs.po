@@ -1101,3 +1101,34 @@ msgstr "将嗅探结果作为连接目标"
 msgid "Edit Sniff Protocols"
 msgstr "编辑按协议嗅探"
 
+msgid "GEO Data Config"
+msgstr "GEO 数据配置"
+
+msgid "Overwrite MMDB Config"
+msgstr "覆盖 MMDB 配置"
+
+msgid "MMDB Database File Path (mmdb)"
+msgstr "MMDB 数据库文件路径 (mmdb)"
+
+msgid "MMDB Download URL (mmdb-download-url)"
+msgstr "MMDB 下载链接 (mmdb-download-url)"
+
+msgid "Overwrite GeoSite Config"
+msgstr "覆盖 GeoSite 配置"
+
+msgid "GeoSite Database File Path (geosite)"
+msgstr "GeoSite 数据库文件路径 (geosite)"
+
+msgid "GeoSite Download URL (geosite-download-url)"
+msgstr "GeoSite 下载链接 (geosite-download-url)"
+
+msgid "Overwrite ASN Database Config"
+msgstr "覆盖 ASN 数据库配置"
+
+msgid "ASN Database File Path (asn-mmdb)"
+msgstr "ASN 数据库文件路径 (asn-mmdb)"
+
+msgid "ASN Database Download URL (asn-mmdb-download-url)"
+msgstr "ASN 数据库下载链接 (asn-mmdb-download-url)"
+
+
