@@ -1130,3 +1130,16 @@ msgstr "ASN 資料庫檔案路徑 (asn-mmdb)"
 msgid "ASN Database Download URL (asn-mmdb-download-url)"
 msgstr "ASN 資料庫下載連結 (asn-mmdb-download-url)"
 
+msgid "Blacklist"
+msgstr "黑名單"
+
+msgid "Whitelist"
+msgstr "白名單"
+
+msgid "Overwrite Proxy Server Nameserver"
+msgstr "覆寫 DNS 伺服器（節點用）"
+
+msgid "Edit Proxy Server Nameservers"
+msgstr "編輯 DNS 伺服器（節點用）"
+
+

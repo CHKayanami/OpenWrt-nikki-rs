@@ -233,6 +233,9 @@ sniffer_force_domain_name=$(uci -q get nikki-rs.mixin.sniffer_force_domain_name)
 sniffer_ignore_domain_name=$(uci -q get nikki-rs.mixin.sniffer_ignore_domain_name); [ -z "$sniffer_ignore_domain_name" ] && uci set nikki-rs.mixin.sniffer_ignore_domain_name=0
 sniffer_sniff=$(uci -q get nikki-rs.mixin.sniffer_sniff); [ -z "$sniffer_sniff" ] && uci set nikki-rs.mixin.sniffer_sniff=0
 
+fake_ip_filter_mode=$(uci -q get nikki-rs.mixin.fake_ip_filter_mode); [ -z "$fake_ip_filter_mode" ] && uci set nikki-rs.mixin.fake_ip_filter_mode='blacklist'
+dns_proxy_server_nameserver=$(uci -q get nikki-rs.mixin.dns_proxy_server_nameserver); [ -z "$dns_proxy_server_nameserver" ] && uci set nikki-rs.mixin.dns_proxy_server_nameserver=0
+
 # commit
 uci commit nikki-rs
 

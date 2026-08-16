@@ -1130,3 +1130,16 @@ msgstr "Путь к файлу базы данных ASN (asn-mmdb)"
 msgid "ASN Database Download URL (asn-mmdb-download-url)"
 msgstr "URL загрузки базы данных ASN (asn-mmdb-download-url)"
 
+msgid "Blacklist"
+msgstr "Черный список"
+
+msgid "Whitelist"
+msgstr "Белый список"
+
+msgid "Overwrite Proxy Server Nameserver"
+msgstr "Переопределить сервер имен прокси-серверов"
+
+msgid "Edit Proxy Server Nameservers"
+msgstr "Редактировать серверы имен прокси-серверов"
+
+

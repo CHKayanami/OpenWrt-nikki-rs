@@ -80,6 +80,7 @@ config['dns']['enhanced-mode'] = uci.get('nikki-rs', 'mixin', 'dns_mode');
 config['dns']['fake-ip-range'] = uci.get('nikki-rs', 'mixin', 'fake_ip_range');
 config['dns']['fake-ip-range6'] = uci.get('nikki-rs', 'mixin', 'fake_ip6_range');
 config['dns']['fake-ip-ttl'] = uci_int(uci.get('nikki-rs', 'mixin', 'fake_ip_ttl'));
+config['dns']['fake-ip-filter-mode'] = uci.get('nikki-rs', 'mixin', 'fake_ip_filter_mode');
 if (uci_bool(uci.get('nikki-rs', 'mixin', 'fake_ip_filter'))) {
 	config['dns']['fake-ip-filter'] = uci_array(uci.get('nikki-rs', 'mixin', 'fake_ip_filters'));
 }
@@ -195,6 +196,9 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_nameserver'))) {
 		push(config['dns'][section.type], ...uci_array(section.nameserver));
 	})
 }
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_proxy_server_nameserver'))) {
+	config['dns']['proxy-server-nameserver'] = uci_array(uci.get('nikki-rs', 'mixin', 'dns_proxy_server_nameservers'));
+}
 if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_nameserver_policy'))) {
 	config['dns']['nameserver-policy'] = {};
 	uci.foreach('nikki-rs', 'nameserver_policy', (section) => {
@@ -202,15 +206,6 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_nameserver_policy'))) {
 			return;
 		}
 		config['dns']['nameserver-policy'][section.matcher] = uci_array(section.nameserver);
-	});
-}
-if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns_proxy_server_nameserver_policy'))) {
-	config['dns']['proxy-server-nameserver-policy'] = {};
-	uci.foreach('nikki-rs', 'proxy_server_nameserver_policy', (section) => {
-		if (!uci_bool(section.enabled)) {
-			return;
-		}
-		config['dns']['proxy-server-nameserver-policy'][section.matcher] = uci_array(section.nameserver);
 	});
 }
 

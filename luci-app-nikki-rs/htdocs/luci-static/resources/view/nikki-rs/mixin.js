@@ -817,6 +817,12 @@ return view.extend({
         o.datatype = 'uinteger';
         o.placeholder = _('Unmodified');
 
+        o = s.taboption('dns', form.ListValue, 'fake_ip_filter_mode', _('Fake-IP Filter Mode'));
+        o.optional = true;
+        o.placeholder = _('Unmodified');
+        o.value('blacklist', _('Blacklist'));
+        o.value('whitelist', _('Whitelist'));
+
         o = s.taboption('dns', form.Flag, 'fake_ip_filter', _('Overwrite Fake-IP Filter'));
         o.rmempty = false;
 
@@ -908,24 +914,12 @@ return view.extend({
 
         so = o.subsection.option(form.DynamicList, 'nameserver', _('Nameserver'));
 
-        o = s.taboption('dns', form.Flag, 'dns_proxy_server_nameserver_policy', _('Overwrite Proxy Server Nameserver Policy'));
+        o = s.taboption('dns', form.Flag, 'dns_proxy_server_nameserver', _('Overwrite Proxy Server Nameserver'));
         o.rmempty = false;
 
-        o = s.taboption('dns', form.SectionValue, '_dns_proxy_server_nameserver_policies', form.TableSection, 'proxy_server_nameserver_policy', _('Edit Proxy Server Nameserver Policies'));
+        o = s.taboption('dns', form.DynamicList, 'dns_proxy_server_nameservers', _('Edit Proxy Server Nameservers'));
         o.retain = true;
-        o.depends('dns_proxy_server_nameserver_policy', '1');
-
-        o.subsection.addremove = true;
-        o.subsection.anonymous = true;
-        o.subsection.sortable = true;
-
-        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
-        so.rmempty = false;
-
-        so = o.subsection.option(form.Value, 'matcher', _('Matcher'));
-        so.rmempty = false;
-
-        so = o.subsection.option(form.DynamicList, 'nameserver', _('Nameserver'));
+        o.depends('dns_proxy_server_nameserver', '1');
 
         s.tab('sniffer', _('Sniffer Config'));
 

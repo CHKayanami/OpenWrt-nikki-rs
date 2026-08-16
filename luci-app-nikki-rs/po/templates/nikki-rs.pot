@@ -1115,3 +1115,16 @@ msgstr ""
 msgid "ASN Database Download URL (asn-mmdb-download-url)"
 msgstr ""
 
+msgid "Blacklist"
+msgstr ""
+
+msgid "Whitelist"
+msgstr ""
+
+msgid "Overwrite Proxy Server Nameserver"
+msgstr ""
+
+msgid "Edit Proxy Server Nameservers"
+msgstr ""
+
+
