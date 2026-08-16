@@ -13,7 +13,7 @@ English | [中文](README.zh.md)
 - **Out of the Box**: Built-in default firewall rules (FakeIP + bypass mainland China) and routing rules to meet most common scenarios. Also supports easy configuration for custom nodes—just configure your proxy node details to get started.
 - **Ultra Lightweight (`clash-rs`)**: Powered by a fork of [clash-rs](https://github.com/CHKayanami/clash-rs) written in Rust, significantly reducing memory and CPU overhead. Compared to the original version, it fixes several bugs, adds new features, and improves stability.
 - **Configuration Compatibility**: Most configurations are compatible with mihomo. Unsupported options will not cause errors—they simply will not take effect. For details, refer to [clash-rs configuration](https://github.com/CHKayanami/clash-rs/blob/master/clash-bin/tests/data/config/full.yaml).
-- **Transparent Proxy**: Native support for Redirect and TPROXY modes, covering both IPv4 and IPv6 traffic routing. (Note: The UI retains TUN mode options, but the default built-in kernel is `minimal` and does not include the TUN module. If you need TUN mode or full protocol support, you can switch to the `standard` release).
+- **Transparent Proxy**: Native support for Redirect, TPROXY, and TUN modes, covering both IPv4 and IPv6 traffic routing.
 - **Rich Protocol Support**: Excellent support for protocols including SS, AnyTLS, Hysteria2 (hy2), and VLESS-Vision-Reality. Modules such as SSH, WireGuard, Tailscale, Shadowquic, and Tor are removed in the default kernel. You can quickly switch between `minimal` and `standard` cores using the one-click script:
   ```bash
   wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/switch_core.sh | ash

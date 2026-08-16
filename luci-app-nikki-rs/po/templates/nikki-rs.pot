@@ -336,6 +336,10 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
+#: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:745
+msgid "Enable TCP"
+msgstr ""
+
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/profile.js:47
 msgid "Expire At"
 msgstr ""

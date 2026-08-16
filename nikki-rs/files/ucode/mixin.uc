@@ -62,6 +62,7 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'authentication'))) {
 
 config['tun'] = {};
 config['tun']['enable'] = uci_bool(uci.get('nikki-rs', 'mixin', 'tun_enabled'));
+config['tun']['enable-tcp'] = uci_bool(uci.get('nikki-rs', 'mixin', 'tun_enable_tcp'));
 config['tun']['device'] = uci.get('nikki-rs', 'mixin', 'tun_device');
 config['tun']['stack'] = uci.get('nikki-rs', 'mixin', 'tun_stack');
 config['tun']['mtu'] = uci_int(uci.get('nikki-rs', 'mixin', 'tun_mtu'));

@@ -742,6 +742,12 @@ return view.extend({
         o.value('0', _('Disable'));
         o.value('1', _('Enable'));
 
+        o = s.taboption('tun', form.ListValue, 'tun_enable_tcp', _('Enable TCP'));
+        o.optional = true;
+        o.placeholder = _('Unmodified');
+        o.value('0', _('Disable'));
+        o.value('1', _('Enable'));
+
         o = s.taboption('tun', form.Value, 'tun_device', _('Device Name'));
         o.placeholder = _('Unmodified');
 

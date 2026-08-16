@@ -335,6 +335,10 @@ msgstr "編輯器"
 msgid "Enable"
 msgstr "啟用"
 
+#: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:745
+msgid "Enable TCP"
+msgstr "啟用 TCP"
+
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/profile.js:47
 msgid "Expire At"
 msgstr "到期時間"
