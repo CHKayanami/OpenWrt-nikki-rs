@@ -114,6 +114,9 @@ start_service() {
 	config_get_bool ipv6_dns_hijack "proxy" "ipv6_dns_hijack" 0
 	config_get tcp_mode "proxy" "tcp_mode"
 	config_get udp_mode "proxy" "udp_mode"
+	## ebpf config
+	local ebpf_enabled
+	config_get_bool ebpf_enabled "ebpf" "enabled" 0
 	## log config
 	local log_scheduled_clear log_scheduled_clear_cron
 	config_get_bool log_scheduled_clear "log" "scheduled_clear" 0
@@ -200,6 +203,7 @@ start_service() {
 		if [ "$ui_internal" = 1 ]; then
 			yq -M -i 'del(.external-ui) | del(.external-ui-name) | del(.external-ui-url)' "$RUN_PROFILE_PATH"
 		fi
+		yq -M -i 'del(.ebpf)' "$RUN_PROFILE_PATH"
 
 		local mixin_rule_provider; config_get_bool mixin_rule_provider "mixin" "rule_provider" 0
 		if [ "$mixin_rule_provider" = 1 ]; then
@@ -220,7 +224,7 @@ start_service() {
 		fi
 	fi
 	# check profile
-	if [ "$core_only" = 0 ] && [ "$proxy_enabled" = 1 ]; then
+	if [ "$core_only" = 0 ] && [ "$proxy_enabled" = 1 ] && [ "$ebpf_enabled" = 0 ]; then
 		log "Profile" "Checking..."
 		if [ "$ipv4_dns_hijack" = 1 ] || [ "$ipv6_dns_hijack" = 1 ]; then
 			if yq -M -e '(has("dns") and (.dns | .enable) and (.dns | has("listen"))) | not' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
@@ -255,6 +259,15 @@ start_service() {
 			fi
 		fi
 		log "Profile" "Check passed."
+	elif [ "$core_only" = 0 ] && [ "$ebpf_enabled" = 1 ]; then
+		log "Profile" "Checking eBPF..."
+		if yq -M -e '(has("ebpf") and (.ebpf | .enable)) | not' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
+			log "Profile" "Check failed."
+			log "Profile" "eBPF should be enabled and defined."
+			log "App" "Exit."
+			return
+		fi
+		log "Profile" "Check passed."
 	fi
 	# test profile
 	if [ "$test_profile" = 1 ]; then
@@ -272,7 +285,7 @@ start_service() {
 	log "Core" "Start."
 	procd_open_instance nikki-rs
 
-	procd_set_param command /bin/sh -c "$PROG -d $RUN_DIR >> $CORE_LOG_PATH 2>&1"
+	procd_set_param command /bin/sh -c "exec $PROG -d $RUN_DIR >> $CORE_LOG_PATH 2>&1"
 	procd_set_param file "$RUN_PROFILE_PATH"
 	if [ "$fast_reload" = 1 ]; then
 		procd_set_param reload_signal HUP
@@ -325,6 +338,13 @@ service_started() {
 	fi
 	# load config
 	config_load nikki-rs
+	# check if ebpf enabled
+	local ebpf_enabled
+	config_get_bool ebpf_enabled "ebpf" "enabled" 0
+	if [ "$ebpf_enabled" = 1 ]; then
+		log "Proxy" "eBPF is enabled, external nftables hijack and routing rules are bypassed."
+		return
+	fi
 	# check if proxy enabled
 	local proxy_enabled
 	config_get_bool proxy_enabled "proxy" "enabled" 0

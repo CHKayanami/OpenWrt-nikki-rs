@@ -14,6 +14,7 @@ English | [中文](README.zh.md)
 - **Ultra Lightweight (`clash-rs`)**: Powered by a fork of [clash-rs](https://github.com/CHKayanami/clash-rs) written in Rust, significantly reducing memory and CPU overhead. Compared to the original version, it fixes several bugs, adds new features, and improves stability.
 - **Configuration Compatibility**: Most configurations are compatible with mihomo. Unsupported options will not cause errors—they simply will not take effect. For details, refer to [clash-rs configuration](https://github.com/CHKayanami/clash-rs/blob/master/clash-bin/tests/data/config/full.yaml).
 - **Transparent Proxy**: Native support for Redirect, TPROXY, and TUN modes, covering both IPv4 and IPv6 traffic routing.
+- **eBPF Proxy**: Transparent proxy powered by eBPF, supporting kernel-space Direct Fast-Path decision making.
 - **Rich Protocol Support**: Excellent support for protocols including SS, AnyTLS, Hysteria2 (hy2), and VLESS-Vision-Reality. Modules such as SSH, WireGuard, Tailscale, Shadowquic, and Tor are removed in the default kernel. You can quickly switch between `minimal` and `standard` cores using the one-click script:
   ```bash
   wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/switch_core.sh | ash

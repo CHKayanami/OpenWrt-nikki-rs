@@ -18,6 +18,84 @@ export function uci_array(obj) {
 	return [obj];
 };
 
+export function uci_ports(obj) {
+	if (obj == null) {
+		return [];
+	}
+	let list = [];
+	if (type(obj) == 'array') {
+		list = obj;
+	} else if (type(obj) == 'string') {
+		if (obj == '0-65535') {
+			return [];
+		}
+		list = split(obj, ' ');
+	} else {
+		list = [obj];
+	}
+	let result = [];
+	for (let item in list) {
+		if (item == null || item == '' || item == '0-65535') {
+			continue;
+		}
+		let num = int(item);
+		if (num != null && num > 0 && num <= 65535) {
+			push(result, num);
+		}
+	}
+	return uniq(result);
+};
+
+export function uci_dscps(obj) {
+	if (obj == null) {
+		return [];
+	}
+	let list = [];
+	if (type(obj) == 'array') {
+		list = obj;
+	} else if (type(obj) == 'string') {
+		list = split(obj, ' ');
+	} else {
+		list = [obj];
+	}
+	let result = [];
+	for (let item in list) {
+		if (item == null || item == '') {
+			continue;
+		}
+		let num = int(item, 0);
+		if (num != null && num >= 0 && num <= 63) {
+			push(result, num);
+		}
+	}
+	return uniq(result);
+};
+
+export function uci_fwmarks(obj) {
+	if (obj == null) {
+		return [];
+	}
+	let list = [];
+	if (type(obj) == 'array') {
+		list = obj;
+	} else if (type(obj) == 'string') {
+		list = split(obj, ' ');
+	} else {
+		list = [obj];
+	}
+	let result = [];
+	for (let item in list) {
+		if (item == null || item == '') {
+			continue;
+		}
+		let num = int(item, 0);
+		if (num != null && num >= 0 && num <= 4294967295) {
+			push(result, num);
+		}
+	}
+	return uniq(result);
+};
+
 export function trim_all(obj) {
 	if (obj == null) {
 		return null;

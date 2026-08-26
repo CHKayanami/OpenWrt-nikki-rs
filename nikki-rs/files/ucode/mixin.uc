@@ -5,7 +5,7 @@
 import { readfile } from 'fs';
 import { cursor } from 'uci';
 import { connect } from 'ubus';
-import { uci_bool, uci_int, uci_array, trim_all, parse_proxy_links, parse_yaml_proxy, load_ip_list } from '/etc/nikki-rs/ucode/include.uc';
+import { uci_bool, uci_int, uci_array, uci_ports, uci_dscps, uci_fwmarks, trim_all, parse_proxy_links, parse_yaml_proxy, load_ip_list } from '/etc/nikki-rs/ucode/include.uc';
 
 const uci = cursor();
 const ubus = connect();
@@ -282,6 +282,36 @@ if (uci_bool(uci.get('nikki-rs', 'mixin', 'proxy_node'))) {
 			}
 		}
 	});
+}
+
+if (uci_bool(uci.get('nikki-rs', 'ebpf', 'enabled'))) {
+	config['ebpf'] = {
+		'enable': true,
+		'lan-interface': uci_array(uci.get('nikki-rs', 'ebpf', 'lan_interface')),
+		'wan-interface': uci.get('nikki-rs', 'ebpf', 'wan_interface'),
+		'tproxy-port': uci_int(uci.get('nikki-rs', 'ebpf', 'tproxy_port')) || 12345,
+		'tproxy-udp-port': uci_int(uci.get('nikki-rs', 'ebpf', 'tproxy_udp_port')) || 12345,
+		'auto-direct-offload': uci_bool(uci.get('nikki-rs', 'ebpf', 'auto_direct_offload')),
+		'bypass-dscps': uci_dscps(uci.get('nikki-rs', 'ebpf', 'bypass_dscps') || uci.get('nikki-rs', 'ebpf', 'bypass_dscp')),
+		'bypass-fwmarks': uci_fwmarks(uci.get('nikki-rs', 'ebpf', 'bypass_fwmarks') || uci.get('nikki-rs', 'ebpf', 'bypass_fwmark')),
+		'lan': {
+			'bypass-src-ports': uci_ports(uci.get('nikki-rs', 'ebpf', 'bypass_src_ports')),
+			'proxy-src-ports': uci_ports(uci.get('nikki-rs', 'ebpf', 'proxy_src_ports')),
+			'bypass-src-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'bypass_src_ips')),
+			'proxy-src-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'proxy_src_ips'))
+		},
+		'host': {
+			'proxy-local': uci_bool(uci.get('nikki-rs', 'ebpf', 'proxy_local')),
+			'proxy-processes': uci_array(uci.get('nikki-rs', 'ebpf', 'proxy_processes')),
+			'bypass-processes': uci_array(uci.get('nikki-rs', 'ebpf', 'bypass_processes'))
+		},
+		'target': {
+			'bypass-dst-ports': uci_ports(uci.get('nikki-rs', 'ebpf', 'bypass_dst_ports')),
+			'proxy-dst-ports': uci_ports(uci.get('nikki-rs', 'ebpf', 'proxy_dst_ports')),
+			'bypass-dst-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'bypass_dst_ips')),
+			'proxy-dst-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'proxy_dst_ips'))
+		}
+	};
 }
 
 print(trim_all(config));

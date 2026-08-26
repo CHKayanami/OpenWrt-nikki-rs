@@ -1127,4 +1127,104 @@ msgstr ""
 msgid "Edit Proxy Server Nameservers"
 msgstr ""
 
+msgid "eBPF Config"
+msgstr ""
 
+msgid "LAN interfaces to attach eBPF ingress filter."
+msgstr ""
+
+msgid "WAN interface to attach eBPF egress filter."
+msgstr ""
+
+msgid "TCP transparent proxy port inside daens."
+msgstr ""
+
+msgid "UDP transparent proxy port inside daens."
+msgstr ""
+
+msgid "Auto Direct Offload"
+msgstr ""
+
+msgid "Automatically offload DIRECT traffic to eBPF dynamic bypass map."
+msgstr ""
+
+msgid "Proxy Client IPs / CIDRs"
+msgstr ""
+
+msgid "Specific LAN client IPs or CIDRs to proxy (if empty, all clients except bypassed ones will be proxied)."
+msgstr ""
+
+msgid "Bypass Client IPs / CIDRs"
+msgstr ""
+
+msgid "Specific LAN client IPs or CIDRs to bypass directly (direct connection, no proxy)."
+msgstr ""
+
+msgid "Proxy Source Ports"
+msgstr ""
+
+msgid "Source ports to proxy (if set, ONLY traffic from these source ports will be proxied)."
+msgstr ""
+
+msgid "Bypass Source Ports"
+msgstr ""
+
+msgid "Source ports to bypass (e.g. 22, 67, 68, 5353)."
+msgstr ""
+
+msgid "Proxy Router Traffic"
+msgstr ""
+
+msgid "Proxy traffic originating from the local router/gateway."
+msgstr ""
+
+msgid "Proxy Processes"
+msgstr ""
+
+msgid "Process whitelist: ONLY traffic originating from these process names will be proxied on the router."
+msgstr ""
+
+msgid "Bypass Processes"
+msgstr ""
+
+msgid "Process blacklist: Traffic originating from these process names will always bypass proxy."
+msgstr ""
+
+msgid "WAN Proxy"
+msgstr ""
+
+msgid "Proxy Destination IPs / CIDRs"
+msgstr ""
+
+msgid "Destination IP whitelist: if set, ONLY traffic to matching IPs/CIDRs will be proxied."
+msgstr ""
+
+msgid "Bypass Destination IPs / CIDRs"
+msgstr ""
+
+msgid "Destination IPs, CIDRs or reserved ranges to bypass directly (e.g. 127.0.0.0/8, 169.254.0.0/16, ::1/128)."
+msgstr ""
+
+msgid "Proxy Destination Ports"
+msgstr ""
+
+msgid "Destination ports to proxy (if set, ONLY traffic to these ports will be proxied)."
+msgstr ""
+
+msgid "Bypass Destination Ports"
+msgstr ""
+
+msgid "Destination ports to bypass directly (e.g. 123, 500, 4500)."
+msgstr ""
+
+msgid "Traffic with matching DSCP (0-63) values will bypass proxy directly."
+msgstr ""
+
+msgid "Traffic with matching firewall mark (e.g. 0x200 or 512) will bypass proxy directly."
+msgstr ""
+
+msgid "Expecting a valid decimal (0-4294967295) or hex (0x0-0xffffffff) fwmark"
+msgstr ""
+
+msgid "When enabled, the Proxy Config will be ineffective."
+msgstr ""

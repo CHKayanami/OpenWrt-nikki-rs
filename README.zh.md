@@ -13,6 +13,7 @@
 - **极致轻量 (`clash-rs`)**：基于 Rust 编写的 [clash-rs](https://github.com/CHKayanami/clash-rs) Fork 版本核心，极大幅度降低内存占用与 CPU 开销；相比原版修复了多项 Bug、扩充了一些功能并提升了运行稳定性。
 - **配置兼容**：配置绝大部分兼容mihomo，部分配置不支持的也不会报错，只是不会生效，具体配置参考[clash-rs配置](https://github.com/CHKayanami/clash-rs/blob/master/clash-bin/tests/data/config/full.yaml)
 - **透明代理**：原生支持 Redirect 、 TPROXY 和 TUN 模式，完整覆盖 IPv4 与 IPv6 流量分流。
+- **eBPF代理**：基于eBPF的透明代理，支持内核态直连快路径决策（Direct Fast-Path）。
 - **丰富协议支持**：良好支持 SS、AnyTLS、Hysteria2 (hy2) 及 VLESS-Vision-Reality 等协议；默认内核移除了 SSH、WireGuard、Tailscale、Shadowquic、Tor 等模块，可通过一键脚本快速切换为完整版内核：
   ```bash
   wget -O - https://github.com/CHKayanami/OpenWrt-nikki-rs/raw/refs/heads/main/switch_core.sh | ash

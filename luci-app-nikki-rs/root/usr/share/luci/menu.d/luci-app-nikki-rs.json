@@ -46,6 +46,14 @@
             "path": "nikki-rs/proxy"
         }
     },
+    "admin/services/nikki-rs/ebpf": {
+        "title": "eBPF Config",
+        "order": 45,
+        "action": {
+            "type": "view",
+            "path": "nikki-rs/ebpf"
+        }
+    },
     "admin/services/nikki-rs/editor": {
         "title": "Editor",
         "order": 50,

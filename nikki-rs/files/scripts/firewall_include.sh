@@ -10,8 +10,9 @@ config_get tun_listener_name "core" "tun_listener_name"
 config_get_bool proxy_enabled "proxy" "enabled" 0 
 config_get tcp_mode "proxy" "tcp_mode"
 config_get udp_mode "proxy" "udp_mode"
+config_get_bool ebpf_enabled "ebpf" "enabled" 0
 
-if [ "$enabled" = 1 ] && [ "$core_only" = 0 ] && [ "$proxy_enabled" = 1 ]; then
+if [ "$enabled" = 1 ] && [ "$core_only" = 0 ] && [ "$proxy_enabled" = 1 ] && [ "$ebpf_enabled" = 0 ]; then
 	if [ "$tcp_mode" = "tun" ] || [ "$udp_mode" = "tun" ]; then
 		tun_device=$(yq -M "(.tun | select(.enable) | .device) // (.listeners[] | select(.name == \"$tun_listener_name\" and .type == \"tun\") | .device)" "$RUN_PROFILE_PATH")
 		nft insert rule inet fw4 input iifname "$tun_device" counter accept comment "nikki-rs"

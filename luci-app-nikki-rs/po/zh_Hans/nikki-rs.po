@@ -1147,5 +1147,104 @@ msgstr "覆盖 DNS 服务器（节点用）"
 msgid "Edit Proxy Server Nameservers"
 msgstr "编辑 DNS 服务器（节点用）"
 
+msgid "eBPF Config"
+msgstr "eBPF 配置"
 
+msgid "LAN interfaces to attach eBPF ingress filter."
+msgstr "附加 eBPF 入站过滤的局域网接口。"
 
+msgid "WAN interface to attach eBPF egress filter."
+msgstr "附加 eBPF 出站过滤的外网接口。"
+
+msgid "TCP transparent proxy port inside daens."
+msgstr "daens 内部的 TCP 透明代理端口。"
+
+msgid "UDP transparent proxy port inside daens."
+msgstr "daens 内部的 UDP 透明代理端口。"
+
+msgid "Auto Direct Offload"
+msgstr "自动直连卸载"
+
+msgid "Automatically offload DIRECT traffic to eBPF dynamic bypass map."
+msgstr "自动将直连流量下发至 eBPF 动态直连 Map 进行内核级直连卸载。"
+
+msgid "Proxy Client IPs / CIDRs"
+msgstr "代理客户端 IP / 网段"
+
+msgid "Specific LAN client IPs or CIDRs to proxy (if empty, all clients except bypassed ones will be proxied)."
+msgstr "指定要代理的局域网客户端 IP 或 CIDR 网段（若留空，则代理除直连列表外的所有客户端）。"
+
+msgid "Bypass Client IPs / CIDRs"
+msgstr "直连客户端 IP / 网段"
+
+msgid "Specific LAN client IPs or CIDRs to bypass directly (direct connection, no proxy)."
+msgstr "指定直连（不代理）的局域网客户端 IP 或 CIDR 网段。"
+
+msgid "Proxy Source Ports"
+msgstr "代理客户端源端口"
+
+msgid "Source ports to proxy (if set, ONLY traffic from these source ports will be proxied)."
+msgstr "指定要代理的客户端源端口（若设置，仅代理来自这些源端口的流量）。"
+
+msgid "Bypass Source Ports"
+msgstr "直连客户端源端口"
+
+msgid "Source ports to bypass (e.g. 22, 67, 68, 5353)."
+msgstr "要直连的源端口（例如 22, 67, 68, 5353）。"
+
+msgid "Proxy Router Traffic"
+msgstr "代理路由器本机流量"
+
+msgid "Proxy traffic originating from the local router/gateway."
+msgstr "代理路由器/网关自身发出的流量。"
+
+msgid "Proxy Processes"
+msgstr "代理进程白名单"
+
+msgid "Process whitelist: ONLY traffic originating from these process names will be proxied on the router."
+msgstr "进程白名单：仅代理路由器上这些进程名称产生的流量。"
+
+msgid "Bypass Processes"
+msgstr "直连进程黑名单"
+
+msgid "Process blacklist: Traffic originating from these process names will always bypass proxy."
+msgstr "进程黑名单：这些进程名称产生的流量始终直连放行。"
+
+msgid "WAN Proxy"
+msgstr "公网代理"
+
+msgid "Proxy Destination IPs / CIDRs"
+msgstr "代理目标 IP / 网段"
+
+msgid "Destination IP whitelist: if set, ONLY traffic to matching IPs/CIDRs will be proxied."
+msgstr "目标 IP 白名单：若设置，仅代理访问这些目标 IP 或 CIDR 网段的流量。"
+
+msgid "Bypass Destination IPs / CIDRs"
+msgstr "直连目标 IP / 网段"
+
+msgid "Destination IPs, CIDRs or reserved ranges to bypass directly (e.g. 127.0.0.0/8, 169.254.0.0/16, ::1/128)."
+msgstr "直接直连的目标 IP、CIDR 或保留地址范围（例如 127.0.0.0/8, 169.254.0.0/16, ::1/128）。"
+
+msgid "Proxy Destination Ports"
+msgstr "代理目标端口"
+
+msgid "Destination ports to proxy (if set, ONLY traffic to these ports will be proxied)."
+msgstr "指定要代理的目标端口（若设置，仅代理访问这些目标端口的流量）。"
+
+msgid "Bypass Destination Ports"
+msgstr "直连目标端口"
+
+msgid "Destination ports to bypass directly (e.g. 123, 500, 4500)."
+msgstr "直接直连的目标端口（例如 123, 500, 4500）。"
+
+msgid "Traffic with matching DSCP (0-63) values will bypass proxy directly."
+msgstr "匹配指定 DSCP (0-63) 的流量将直接绕过代理。"
+
+msgid "Traffic with matching firewall mark (e.g. 0x200 or 512) will bypass proxy directly."
+msgstr "匹配指定防火墙标记 (如 0x200 或 512) 的流量将直接绕过代理。"
+
+msgid "Expecting a valid decimal (0-4294967295) or hex (0x0-0xffffffff) fwmark"
+msgstr "请输入有效的十进制 (0-4294967295) 或十六进制 (0x0-0xffffffff) 防火墙标记"
+
+msgid "When enabled, the Proxy Config will be ineffective."
+msgstr "本功能开启后代理配置将失效。"
