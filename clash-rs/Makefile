@@ -7,28 +7,30 @@ PKG_RELEASE:=1
 # 架构映射与 SHA256 校验码
 ifneq ($(findstring x86_64,$(ARCH)),)
   CLASH_TARGET:=x86_64-unknown-linux-musl
-  CLASH_HASH:=e14c3ce6f6df7f6ad36702100d8cd3ceed35fa0fde53ec67c898a1a7b30164a1
+  CLASH_HASH:=81f936ac4a50f56827cb5e6548f73860f73b10324cb521d5c6a37fb29e4a63be
 else ifneq ($(findstring aarch64,$(ARCH)),)
   CLASH_TARGET:=aarch64-unknown-linux-musl
-  CLASH_HASH:=a5ed70ca9ef6fd7e62072d7e1b7ccf83aab508fe71151be229d8bd3bf787919e
+  CLASH_HASH:=9829d29e5b90f71078a1b445408d5c460fc59cd3a7a839ea1f226b34d57bcfae
 else ifneq ($(findstring arm,$(ARCH)),)
   CLASH_TARGET:=armv7-unknown-linux-musleabihf
-  CLASH_HASH:=7ea01c1d8d061d2d20fdec5b1621c7a2ed1586e8da56f3a50af2cb5dd22e6532
+  CLASH_HASH:=c950ce1dd1d175627f291b09883ee1130ad710b3f0c696c347a0d48d967d8d31
 else ifneq ($(findstring riscv64,$(ARCH)),)
   CLASH_TARGET:=riscv64gc-unknown-linux-musl
-  CLASH_HASH:=e30a64574b718085cc8a043831f9010a48af0c4139254f04698403e3173939c5
+  CLASH_HASH:=e0323fa58982529eacd647be91fe9a212b3029b4859185904b16d48775774dda
 else ifneq ($(findstring i386,$(ARCH)),)
   CLASH_TARGET:=i686-unknown-linux-musl
-  CLASH_HASH:=2a6d3a5c9560e6d48b289d817df0dd5201160e37748ba0b94b69623e0661ba32
+  CLASH_HASH:=f60fdbad9bbe707ba4744a51b1d167a4aaf8c31b37b7c8f959c5274902d9fa31
 else ifneq ($(findstring i686,$(ARCH)),)
   CLASH_TARGET:=i686-unknown-linux-musl
-  CLASH_HASH:=2a6d3a5c9560e6d48b289d817df0dd5201160e37748ba0b94b69623e0661ba32
+  CLASH_HASH:=f60fdbad9bbe707ba4744a51b1d167a4aaf8c31b37b7c8f959c5274902d9fa31
 endif
 
 PKG_HASH:=$(CLASH_HASH)
 
+PKG_FLAGS:=nonshared
+
 PKG_SOURCE:=clash-rs-minimal-$(CLASH_TARGET).tar.gz
-PKG_SOURCE_URL:=https://github.com/CHKayanami/clash-rs/releases/download/latest/
+PKG_SOURCE_URL:=https://github.com/CHKayanami/clash-rs/releases/download/v0.20.0-alpha/
 PKG_BUILD_DIR:=$(BUILD_DIR)/clash-rs-minimal-$(CLASH_TARGET)
 
 include $(INCLUDE_DIR)/package.mk
@@ -37,10 +39,16 @@ define Package/clash-rs
   SECTION:=net
   CATEGORY:=Network
   TITLE:=clash-rs proxy core (Latest Prebuilt from CHKayanami/clash-rs)
+  URL:=https://github.com/CHKayanami/clash-rs
+endef
+
+define Build/Prepare
+	mkdir -p $(PKG_BUILD_DIR)
+	$(TAR) -xzf $(DL_DIR)/$(PKG_SOURCE) --strip-components=1 -C $(PKG_BUILD_DIR)
 endef
 
 define Build/Compile
-	# 预编译最新版无需编译，解压即用
+	true
 endef
 
 define Package/clash-rs/install

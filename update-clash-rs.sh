@@ -105,6 +105,8 @@ endif
 
 PKG_HASH:=\$(CLASH_HASH)
 
+PKG_FLAGS:=nonshared
+
 PKG_SOURCE:=clash-rs-minimal-\$(CLASH_TARGET).tar.gz
 PKG_SOURCE_URL:=https://github.com/${REPO}/releases/download/${TAG_NAME}/
 PKG_BUILD_DIR:=\$(BUILD_DIR)/clash-rs-minimal-\$(CLASH_TARGET)
@@ -115,10 +117,16 @@ define Package/clash-rs
   SECTION:=net
   CATEGORY:=Network
   TITLE:=clash-rs proxy core (Latest Prebuilt from ${REPO})
+  URL:=https://github.com/${REPO}
+endef
+
+define Build/Prepare
+	mkdir -p \$(PKG_BUILD_DIR)
+	\$(TAR) -xzf \$(DL_DIR)/\$(PKG_SOURCE) --strip-components=1 -C \$(PKG_BUILD_DIR)
 endef
 
 define Build/Compile
-	# 预编译最新版无需编译，解压即用
+	true
 endef
 
 define Package/clash-rs/install
