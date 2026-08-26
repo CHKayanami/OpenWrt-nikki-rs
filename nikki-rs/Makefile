@@ -14,7 +14,7 @@ define Package/nikki-rs
   CATEGORY:=Network
   TITLE:=Transparent Proxy with clash-rs on OpenWrt.
   URL:=https://github.com/nikkinikki-org
-  DEPENDS:=+ca-bundle +curl +yq firewall4 +ip-full +kmod-inet-diag +kmod-nft-socket +kmod-nft-tproxy +kmod-tun +kmod-dummy +clash-rs
+  DEPENDS:=+ca-bundle curl +yq firewall4 +ip-full +kmod-inet-diag +kmod-nft-socket +kmod-nft-tproxy +kmod-tun +kmod-dummy +clash-rs
 endef
 
 define Package/nikki-rs/conffiles
