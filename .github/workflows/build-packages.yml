@@ -76,6 +76,7 @@ jobs:
           FEEDNAME: nikki_rs
           PACKAGES: clash-rs nikki-rs luci-app-nikki-rs
           NO_REFRESH_CHECK: true
+          V: s
 
       - name: upload
         uses: actions/upload-artifact@v7
