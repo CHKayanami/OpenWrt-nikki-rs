@@ -1,7 +1,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clash-rs
-PKG_VERSION:=0.20.0-alpha
+PKG_VERSION:=0.20.0_alpha
 PKG_RELEASE:=1
 
 # 架构映射与 SHA256 校验码

@@ -48,6 +48,9 @@ else
   fi
 fi
 
+# APK (OpenWrt 25.12/SNAPSHOT) 规范：版本号中禁止包含 '-'，将 '-' 转为 '_' (如 0.20.0-alpha -> 0.20.0_alpha)
+VERSION="${VERSION//-/_}"
+
 echo "✨ 最新发布 Tag 为: $TAG_NAME (Package Version: $VERSION)"
 
 echo "📥 正在实时下载并计算各架构的 SHA256 哈希值..."
