@@ -25,9 +25,8 @@ else ifneq ($(findstring i686,$(ARCH)),)
   CLASH_HASH:=f60fdbad9bbe707ba4744a51b1d167a4aaf8c31b37b7c8f959c5274902d9fa31
 endif
 
-PKG_HASH:=$(CLASH_HASH)
 
-PKG_FLAGS:=nonshared
+PKG_HASH:=$(CLASH_HASH)
 
 PKG_SOURCE:=clash-rs-minimal-$(CLASH_TARGET).tar.gz
 PKG_SOURCE_URL:=https://github.com/CHKayanami/clash-rs/releases/download/v0.20.0-alpha/

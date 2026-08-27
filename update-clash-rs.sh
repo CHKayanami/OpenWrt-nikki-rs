@@ -108,8 +108,6 @@ endif
 
 PKG_HASH:=\$(CLASH_HASH)
 
-PKG_FLAGS:=nonshared
-
 PKG_SOURCE:=clash-rs-minimal-\$(CLASH_TARGET).tar.gz
 PKG_SOURCE_URL:=https://github.com/${REPO}/releases/download/${TAG_NAME}/
 PKG_BUILD_DIR:=\$(BUILD_DIR)/clash-rs-minimal-\$(CLASH_TARGET)
