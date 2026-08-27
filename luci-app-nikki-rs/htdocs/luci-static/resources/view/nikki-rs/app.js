@@ -109,9 +109,13 @@ return view.extend({
             o.value('subscription:' + subscription['.name'], _('Subscription:') + subscription.name);
         };
 
+        o = s.option(form.Flag, 'boot_start', _('Start on Boot'));
+        o.rmempty = false;
+
         o = s.option(form.Value, 'start_delay', _('Start Delay'));
         o.datatype = 'uinteger';
         o.placeholder = _('Start Immidiately');
+        o.depends('boot_start', '1');
 
         o = s.option(form.Flag, 'scheduled_restart', _('Scheduled Restart'));
         o.rmempty = false;

@@ -760,6 +760,10 @@ msgstr ""
 msgid "Start Immidiately"
 msgstr ""
 
+#: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:101
+msgid "Start on Boot"
+msgstr ""
+
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:40
 msgid "Status"
 msgstr ""

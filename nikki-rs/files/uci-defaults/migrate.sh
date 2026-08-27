@@ -265,6 +265,8 @@ uci -q del nikki-rs.ebpf.bypass_ips
 uci -q del nikki-rs.ebpf.proxy_ports
 uci -q del nikki-rs.ebpf.proxy_ips
 
+boot_start=$(uci -q get nikki-rs.config.boot_start); [ -z "$boot_start" ] && uci set nikki-rs.config.boot_start=0
+
 # commit
 uci commit nikki-rs
 

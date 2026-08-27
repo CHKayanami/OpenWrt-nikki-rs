@@ -847,6 +847,10 @@ msgstr "启动延迟"
 msgid "Start Immidiately"
 msgstr "立即启动"
 
+#: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:101
+msgid "Start on Boot"
+msgstr "开机启动"
+
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:40
 msgid "Status"
 msgstr "状态"

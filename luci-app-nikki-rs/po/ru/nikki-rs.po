@@ -775,6 +775,10 @@ msgstr "Задержка запуска"
 msgid "Start Immidiately"
 msgstr "Запускать немедленно"
 
+#: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:101
+msgid "Start on Boot"
+msgstr "Автозагрузка"
+
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:40
 msgid "Status"
 msgstr "Статус"

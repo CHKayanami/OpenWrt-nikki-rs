@@ -19,11 +19,18 @@ boot_func() {
 	prepare_files
 	# load config
 	config_load nikki-rs
-	# start delay
-	local enabled start_delay
+	# check if enabled and boot_start
+	local enabled boot_start start_delay
 	config_get_bool enabled "config" "enabled" 0
+	config_get_bool boot_start "config" "boot_start" 0
+	if [ "$enabled" = 0 ] || [ "$boot_start" = 0 ]; then
+		log "App" "Boot start disabled."
+		log "App" "Exit."
+		return
+	fi
+	# start delay
 	config_get start_delay "config" "start_delay" 0
-	if [ "$enabled" = 1 ] && [ "$start_delay" -gt 0 ]; then
+	if [ "$start_delay" -gt 0 ]; then
 		log "App" "Start after $start_delay seconds."
 		sleep "$start_delay"
 	fi
