@@ -243,7 +243,6 @@ section_ebpf=$(uci -q get nikki-rs.ebpf); [ -z "$section_ebpf" ] && {
 	uci set nikki-rs.ebpf.enabled=0
 	uci add_list nikki-rs.ebpf.lan_interface=br-lan
 	uci set nikki-rs.ebpf.tproxy_port='12345'
-	uci set nikki-rs.ebpf.tproxy_udp_port='12345'
 	uci set nikki-rs.ebpf.auto_direct_offload=1
 	uci add_list nikki-rs.ebpf.bypass_dscp='4'
 	uci add_list nikki-rs.ebpf.bypass_src_ports='22'
@@ -253,6 +252,7 @@ section_ebpf=$(uci -q get nikki-rs.ebpf); [ -z "$section_ebpf" ] && {
 	uci set nikki-rs.ebpf.proxy_local=1
 	uci add_list nikki-rs.ebpf.bypass_dst_ips='127.0.0.0/8'
 	uci add_list nikki-rs.ebpf.bypass_dst_ips='169.254.0.0/16'
+	uci add_list nikki-rs.ebpf.bypass_dst_ips='192.168.0.0/16'
 	uci add_list nikki-rs.ebpf.bypass_dst_ips='224.0.0.0/4'
 	uci add_list nikki-rs.ebpf.bypass_dst_ips='::1/128'
 	uci add_list nikki-rs.ebpf.bypass_dst_ips='fe80::/10'
@@ -260,6 +260,7 @@ section_ebpf=$(uci -q get nikki-rs.ebpf); [ -z "$section_ebpf" ] && {
 	uci set nikki-rs.ebpf.proxy_dst_ports='21 22 80 110 143 194 443 465 853 993 995 8080 8443'
 }
 [ "$(uci -q get nikki-rs.ebpf.wan_interface)" = "auto" ] && uci -q del nikki-rs.ebpf.wan_interface
+uci -q del nikki-rs.ebpf.tproxy_udp_port
 uci -q del nikki-rs.ebpf.bypass_ports
 uci -q del nikki-rs.ebpf.bypass_ips
 uci -q del nikki-rs.ebpf.proxy_ports

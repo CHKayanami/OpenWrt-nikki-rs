@@ -1049,65 +1049,68 @@ msgstr "下載中國大陸 IP6 檔案"
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/msgid "eBPF Config"
 msgstr "eBPF 設定"
 
+msgid "LAN Interface"
+msgstr "入站綁定"
+
 msgid "LAN interfaces to attach eBPF ingress filter."
-msgstr "附加 eBPF 入站過濾的區域網路介面。"
+msgstr "綁定 eBPF 入站過濾的區域網路介面"
+
+msgid "WAN Interface"
+msgstr "出站綁定"
 
 msgid "WAN interface to attach eBPF egress filter."
-msgstr "附加 eBPF 出站過濾的外部網路介面。"
+msgstr "綁定 eBPF 出站過濾的外部網路介面"
 
-msgid "TCP transparent proxy port inside daens."
-msgstr "daens 內部的 TCP 透明代理連接埠。"
-
-msgid "UDP transparent proxy port inside daens."
-msgstr "daens 內部的 UDP 透明代理連接埠。"
+msgid "Transparent proxy port inside daens."
+msgstr "daens 內部的透明代理連接埠"
 
 msgid "Auto Direct Offload"
 msgstr "自動直連卸載"
 
 msgid "Automatically offload DIRECT traffic to eBPF dynamic bypass map."
-msgstr "自動將直連流量下發至 eBPF 動態直連 Map 進行核心層直連卸載。"
+msgstr "自動將直連ip下發至 eBPF使直連流量不經過代理"
 
 msgid "Proxy Client IPs / CIDRs"
 msgstr "代理用戶端 IP / 網段"
 
 msgid "Specific LAN client IPs or CIDRs to proxy (if empty, all clients except bypassed ones will be proxied)."
-msgstr "指定要代理的區域網路用戶端 IP 或 CIDR 網段（若留空，則代理除直連清單外的所有用戶端）。"
+msgstr "指定要代理的區域網路用戶端 IP 或 CIDR 網段（若留空，則代理除直連清單外的所有用戶端）"
 
 msgid "Bypass Client IPs / CIDRs"
 msgstr "直連用戶端 IP / 網段"
 
 msgid "Specific LAN client IPs or CIDRs to bypass directly (direct connection, no proxy)."
-msgstr "指定直連（不代理）的區域網路用戶端 IP 或 CIDR 網段。"
+msgstr "指定直連（不代理）的區域網路用戶端 IP 或 CIDR 網段"
 
 msgid "Proxy Source Ports"
 msgstr "代理用戶端來源連接埠"
 
 msgid "Source ports to proxy (if set, ONLY traffic from these source ports will be proxied)."
-msgstr "指定要代理的用戶端來源連接埠（若設定，僅代理來自這些來源連接埠的流量）。"
+msgstr "指定要代理的用戶端來源連接埠（若設定，僅代理來自這些來源連接埠的流量）"
 
 msgid "Bypass Source Ports"
 msgstr "直連用戶端來源連接埠"
 
 msgid "Source ports to bypass (e.g. 22, 67, 68, 5353)."
-msgstr "要直連的來源連接埠（例如 22, 67, 68, 5353）。"
+msgstr "要直連的來源連接埠（例如 22, 67, 68, 5353）"
 
 msgid "Proxy Router Traffic"
 msgstr "代理路由器本機流量"
 
 msgid "Proxy traffic originating from the local router/gateway."
-msgstr "代理路由器/閘道本機發出的流量。"
+msgstr "代理路由器/閘道本機發出的流量"
 
 msgid "Proxy Processes"
 msgstr "代理處理程序白名單"
 
 msgid "Process whitelist: ONLY traffic originating from these process names will be proxied on the router."
-msgstr "處理程序白名單：僅代理路由器上這些處理程序名稱產生的流量。"
+msgstr "處理程序白名單：僅代理路由器上這些處理程序名稱產生的流量"
 
 msgid "Bypass Processes"
 msgstr "直連處理程序黑名單"
 
 msgid "Process blacklist: Traffic originating from these process names will always bypass proxy."
-msgstr "處理程序黑名單：這些處理程序名稱產生的流量始終直連放行。"
+msgstr "處理程序黑名單：這些處理程序名稱產生的流量始終直連放行"
 
 msgid "WAN Proxy"
 msgstr "公網代理"
@@ -1116,25 +1119,25 @@ msgid "Proxy Destination IPs / CIDRs"
 msgstr "代理目標 IP / 網段"
 
 msgid "Destination IP whitelist: if set, ONLY traffic to matching IPs/CIDRs will be proxied."
-msgstr "目標 IP 白名單：若設定，僅代理存取這些目標 IP 或 CIDR 網段的流量。"
+msgstr "目標 IP 白名單：若設定，僅代理存取這些目標 IP 或 CIDR 網段的流量"
 
 msgid "Bypass Destination IPs / CIDRs"
 msgstr "直連目標 IP / 網段"
 
 msgid "Destination IPs, CIDRs or reserved ranges to bypass directly (e.g. 127.0.0.0/8, 169.254.0.0/16, ::1/128)."
-msgstr "直接直連的目標 IP、CIDR 或保留位址範圍（例如 127.0.0.0/8, 169.254.0.0/16, ::1/128）。"
+msgstr "直接直連的目標 IP、CIDR 或保留位址範圍（例如 127.0.0.0/8, 169.254.0.0/16, ::1/128）"
 
 msgid "Proxy Destination Ports"
 msgstr "代理目標連接埠"
 
 msgid "Destination ports to proxy (if set, ONLY traffic to these ports will be proxied)."
-msgstr "指定要代理的目標連接埠（若設定，僅代理存取這些目標連接埠的流量）。"
+msgstr "指定要代理的目標連接埠（若設定，僅代理存取這些目標連接埠的流量）"
 
 msgid "Bypass Destination Ports"
 msgstr "直連目標連接埠"
 
 msgid "Destination ports to bypass directly (e.g. 123, 500, 4500)."
-msgstr "直接直連的目標連接埠（例如 123, 500, 4500）。"
+msgstr "直接直連的目標連接埠（例如 123, 500, 4500）"
 
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/proxy.js:204
 msgid "China Mainland IP6 file downloaded successfully."
@@ -1237,13 +1240,13 @@ msgid "Edit Proxy Server Nameservers"
 msgstr "編輯 DNS 伺服器（節點用）"
 
 msgid "Traffic with matching DSCP (0-63) values will bypass proxy directly."
-msgstr "符合指定 DSCP (0-63) 的流量將直接繞過代理。"
+msgstr "符合指定 DSCP (0-63) 的流量將直接繞過代理"
 
 msgid "Traffic with matching firewall mark (e.g. 0x200 or 512) will bypass proxy directly."
-msgstr "符合指定防火牆標記 (如 0x200 或 512) 的流量將直接繞過代理。"
+msgstr "符合指定防火牆標記 (如 0x200 或 512) 的流量將直接繞過代理"
 
 msgid "Expecting a valid decimal (0-4294967295) or hex (0x0-0xffffffff) fwmark"
 msgstr "請輸入有效的十進位 (0-4294967295) 或十六進位 (0x0-0xffffffff) 防火牆標記"
 
 msgid "When enabled, the Proxy Config will be ineffective."
-msgstr "本功能開啟後代理設定將失效。"
+msgstr "本功能開啟後代理設定將失效"

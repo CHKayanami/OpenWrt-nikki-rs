@@ -290,7 +290,6 @@ if (uci_bool(uci.get('nikki-rs', 'ebpf', 'enabled'))) {
 		'lan-interface': uci_array(uci.get('nikki-rs', 'ebpf', 'lan_interface')),
 		'wan-interface': uci.get('nikki-rs', 'ebpf', 'wan_interface'),
 		'tproxy-port': uci_int(uci.get('nikki-rs', 'ebpf', 'tproxy_port')) || 12345,
-		'tproxy-udp-port': uci_int(uci.get('nikki-rs', 'ebpf', 'tproxy_udp_port')) || 12345,
 		'auto-direct-offload': uci_bool(uci.get('nikki-rs', 'ebpf', 'auto_direct_offload')),
 		'bypass-dscps': uci_dscps(uci.get('nikki-rs', 'ebpf', 'bypass_dscps') || uci.get('nikki-rs', 'ebpf', 'bypass_dscp')),
 		'bypass-fwmarks': uci_fwmarks(uci.get('nikki-rs', 'ebpf', 'bypass_fwmarks') || uci.get('nikki-rs', 'ebpf', 'bypass_fwmark')),

@@ -24,7 +24,6 @@ return view.extend({
             uci.set('nikki-rs', 'ebpf', 'enabled', '0');
             uci.set('nikki-rs', 'ebpf', 'lan_interface', ['br-lan']);
             uci.set('nikki-rs', 'ebpf', 'tproxy_port', '12345');
-            uci.set('nikki-rs', 'ebpf', 'tproxy_udp_port', '12345');
             uci.set('nikki-rs', 'ebpf', 'auto_direct_offload', '1');
             uci.set('nikki-rs', 'ebpf', 'bypass_dscp', ['4']);
             uci.set('nikki-rs', 'ebpf', 'bypass_src_ports', ['22', '67', '68', '5353']);
@@ -32,6 +31,7 @@ return view.extend({
             uci.set('nikki-rs', 'ebpf', 'bypass_dst_ips', [
                 '127.0.0.0/8',
                 '169.254.0.0/16',
+                '192.168.0.0/16',
                 '224.0.0.0/4',
                 '::1/128',
                 'fe80::/10',
@@ -72,12 +72,7 @@ return view.extend({
             o.value(name);
         }
 
-        o = s.taboption('general', form.Value, 'tproxy_port', _('TPROXY Port (TCP)'), _('TCP transparent proxy port inside daens.'));
-        o.datatype = 'port';
-        o.default = '12345';
-        o.rmempty = false;
-
-        o = s.taboption('general', form.Value, 'tproxy_udp_port', _('TPROXY UDP Port'), _('UDP transparent proxy port inside daens.'));
+        o = s.taboption('general', form.Value, 'tproxy_port', _('TPROXY Port'), _('Transparent proxy port inside daens.'));
         o.datatype = 'port';
         o.default = '12345';
         o.rmempty = false;

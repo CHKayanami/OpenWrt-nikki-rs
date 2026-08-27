@@ -1134,16 +1134,19 @@ msgstr ""
 msgid "eBPF Config"
 msgstr ""
 
+msgid "LAN Interface"
+msgstr ""
+
 msgid "LAN interfaces to attach eBPF ingress filter."
+msgstr ""
+
+msgid "WAN Interface"
 msgstr ""
 
 msgid "WAN interface to attach eBPF egress filter."
 msgstr ""
 
-msgid "TCP transparent proxy port inside daens."
-msgstr ""
-
-msgid "UDP transparent proxy port inside daens."
+msgid "Transparent proxy port inside daens."
 msgstr ""
 
 msgid "Auto Direct Offload"
