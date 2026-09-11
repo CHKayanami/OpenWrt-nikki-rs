@@ -4,14 +4,14 @@
 
 # Nikki RS
 
-**Nikki RS** 是基于 [OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki) 的 OpenWrt Fork 分支。本项目集成了由 Rust 编写的高性能代理核心 [clash-rs](https://github.com/Watfaq/clash-rs)，为 OpenWrt 提供轻量、高性能的透明代理解决方案。
+**Nikki RS** 是基于 [OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki) 的 OpenWrt Fork 分支。本项目集成了由 Rust 编写的高性能代理核心 [clash-rs](https://chkayanami.github.io/clash-rs-alpha-docs/)，为 OpenWrt 提供轻量、高性能的透明代理解决方案。
 
 ---
 
 ## 项目特色
 - **开箱即用**：内置预设防火墙规则（FakeIP + 绕过大陆）与分流策略，满足绝大多数常见使用场景，同时支持便捷的自建节点配置，只需要配置代理节点信息就可开始使用。
-- **极致轻量 (`clash-rs`)**：基于 Rust 编写的 [clash-rs](https://github.com/CHKayanami/clash-rs) Fork 版本核心，极大幅度降低内存占用与 CPU 开销；相比原版修复了多项 Bug、扩充了一些功能并提升了运行稳定性。
-- **配置兼容**：配置绝大部分兼容mihomo，部分配置不支持的也不会报错，只是不会生效，具体配置参考[clash-rs配置](https://github.com/CHKayanami/clash-rs/blob/master/clash-bin/tests/data/config/full.yaml)
+- **极致轻量 (`clash-rs`)**：基于 Rust 编写的 [clash-rs](https://chkayanami.github.io/clash-rs-alpha-docs/) Fork 版本核心，极大幅度降低内存占用与 CPU 开销；相比原版修复了多项 Bug、扩充了一些功能并提升了运行稳定性。
+- **配置兼容**：配置绝大部分兼容mihomo，部分配置不支持的也不会报错，只是不会生效，具体配置参考[clash-rs配置](https://chkayanami.github.io/clash-rs-alpha-docs/configuration/overview)
 - **透明代理**：原生支持 Redirect 、 TPROXY 和 TUN 模式，完整覆盖 IPv4 与 IPv6 流量分流。
 - **eBPF代理**：基于eBPF的透明代理，支持内核态直连快路径决策（Direct Fast-Path）。
 - **丰富协议支持**：良好支持 SS、AnyTLS、Hysteria2 (hy2) 及 VLESS-Vision-Reality 等协议；默认内核移除了 SSH、WireGuard、Tailscale、Shadowquic、Tor 等模块，可通过一键脚本快速切换为完整版内核：
