@@ -111,6 +111,14 @@ return view.extend({
             }
         }
 
+        o = s.taboption('lan', form.DynamicList, 'proxy_src_macs', _('Proxy Client MACs'), _('Specific LAN client MAC addresses to proxy (if set, ONLY traffic from these MACs will be proxied).'));
+        o.datatype = 'macaddr';
+        for (const mac in hosts) {
+            const host = hosts[mac];
+            const hint = host.name ?? host.ipaddrs[0];
+            o.value(mac, hint ? '%s (%s)'.format(mac, hint) : mac);
+        }
+
         o = s.taboption('lan', form.DynamicList, 'bypass_src_ips', _('Bypass Client IPs / CIDRs'), _('Specific LAN client IPs or CIDRs to bypass directly (direct connection, no proxy).'));
         for (const mac in hosts) {
             const host = hosts[mac];

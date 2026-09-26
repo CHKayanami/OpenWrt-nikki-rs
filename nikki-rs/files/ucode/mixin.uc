@@ -297,7 +297,8 @@ if (uci_bool(uci.get('nikki-rs', 'ebpf', 'enabled'))) {
 			'bypass-src-ports': uci_ports(uci.get('nikki-rs', 'ebpf', 'bypass_src_ports')),
 			'proxy-src-ports': uci_ports(uci.get('nikki-rs', 'ebpf', 'proxy_src_ports')),
 			'bypass-src-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'bypass_src_ips')),
-			'proxy-src-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'proxy_src_ips'))
+			'proxy-src-ips': uci_array(uci.get('nikki-rs', 'ebpf', 'proxy_src_ips')),
+			'proxy-src-macs': uci_array(uci.get('nikki-rs', 'ebpf', 'proxy_src_macs'))
 		},
 		'host': {
 			'proxy-local': uci_bool(uci.get('nikki-rs', 'ebpf', 'proxy_local')),

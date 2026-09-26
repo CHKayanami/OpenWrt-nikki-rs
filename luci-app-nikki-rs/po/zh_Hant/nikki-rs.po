@@ -1076,6 +1076,12 @@ msgstr "代理用戶端 IP / 網段"
 msgid "Specific LAN client IPs or CIDRs to proxy (if empty, all clients except bypassed ones will be proxied)."
 msgstr "指定要代理的區域網路用戶端 IP 或 CIDR 網段（若留空，則代理除直連清單外的所有用戶端）"
 
+msgid "Proxy Client MACs"
+msgstr "代理用戶端 MAC 位址"
+
+msgid "Specific LAN client MAC addresses to proxy (if set, ONLY traffic from these MACs will be proxied)."
+msgstr "指定要代理的區域網路用戶端 MAC 位址（若設定，僅代理來自這些 MAC 位址的用戶端流量）"
+
 msgid "Bypass Client IPs / CIDRs"
 msgstr "直連用戶端 IP / 網段"
 

@@ -1161,6 +1161,12 @@ msgstr ""
 msgid "Specific LAN client IPs or CIDRs to proxy (if empty, all clients except bypassed ones will be proxied)."
 msgstr ""
 
+msgid "Proxy Client MACs"
+msgstr ""
+
+msgid "Specific LAN client MAC addresses to proxy (if set, ONLY traffic from these MACs will be proxied)."
+msgstr ""
+
 msgid "Bypass Client IPs / CIDRs"
 msgstr ""
 

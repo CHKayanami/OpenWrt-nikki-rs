@@ -1,3 +1,4 @@
 deploy.sh
 build.sh
 test.md
+.DS_Store

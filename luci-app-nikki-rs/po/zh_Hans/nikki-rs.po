@@ -1181,6 +1181,12 @@ msgstr "代理客户端 IP / 网段"
 msgid "Specific LAN client IPs or CIDRs to proxy (if empty, all clients except bypassed ones will be proxied)."
 msgstr "指定要代理的局域网客户端 IP 或 CIDR 网段（若留空，则代理除直连列表外的所有客户端）"
 
+msgid "Proxy Client MACs"
+msgstr "代理客户端 MAC 地址"
+
+msgid "Specific LAN client MAC addresses to proxy (if set, ONLY traffic from these MACs will be proxied)."
+msgstr "指定要代理的局域网客户端 MAC 地址（若设置，仅代理来自这些 MAC 地址的客户端流量）"
+
 msgid "Bypass Client IPs / CIDRs"
 msgstr "直连客户端 IP / 网段"
 
