@@ -1241,3 +1241,9 @@ msgstr ""
 
 msgid "When enabled, the Proxy Config will be ineffective."
 msgstr ""
+
+msgid "Allow QUIC"
+msgstr ""
+
+msgid "Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP."
+msgstr ""

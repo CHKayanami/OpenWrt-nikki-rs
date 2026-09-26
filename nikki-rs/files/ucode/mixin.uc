@@ -21,6 +21,7 @@ config['mode'] = uci.get('nikki-rs', 'mixin', 'mode');
 config['find-process-mode'] = uci.get('nikki-rs', 'mixin', 'match_process');
 config['interface-name'] = outbound_device;
 config['ipv6'] = uci_bool(uci.get('nikki-rs', 'mixin', 'ipv6'));
+config['quic'] = uci_bool(uci.get('nikki-rs', 'mixin', 'quic'));
 
 if (!uci_bool(uci.get('nikki-rs', 'mixin', 'ui_internal'))) {
 	config['external-ui'] = uci.get('nikki-rs', 'mixin', 'ui_path');

@@ -1261,3 +1261,10 @@ msgstr "请输入有效的十进制 (0-4294967295) 或十六进制 (0x0-0xffffff
 
 msgid "When enabled, the Proxy Config will be ineffective."
 msgstr "本功能开启后代理配置将失效"
+
+msgid "Allow QUIC"
+msgstr "放行 QUIC"
+
+msgid "Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP."
+msgstr "允许代理放行 QUIC 流量（UDP 443 端口）。禁用时将丢弃 QUIC 数据包以强制回退到 TCP。"
+

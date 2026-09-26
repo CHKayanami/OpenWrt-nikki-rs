@@ -655,6 +655,12 @@ return view.extend({
         o.value('0', _('Disable'));
         o.value('1', _('Enable'));
 
+        o = s.taboption('general', form.ListValue, 'quic', _('Allow QUIC'), _('Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP.'));
+        o.optional = true;
+        o.placeholder = _('Unmodified');
+        o.value('0', _('Disable'));
+        o.value('1', _('Enable'));
+
         s.tab('external_control', _('External Control Config'));
 
         o = s.taboption('external_control', form.Flag, 'ui_internal', _('Use Internal UI'));

@@ -4,6 +4,7 @@ allow-lan: true
 mode: Rule
 log-level: error 
 ipv6: true
+quic: true
 external-controller: 0.0.0.0:9999
 cors-allow-origins:
   - "*"

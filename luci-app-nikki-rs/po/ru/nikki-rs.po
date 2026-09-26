@@ -1146,4 +1146,11 @@ msgstr "Переопределить сервер имен прокси-серв
 msgid "Edit Proxy Server Nameservers"
 msgstr "Редактировать серверы имен прокси-серверов"
 
+msgid "Allow QUIC"
+msgstr "Разрешить QUIC"
+
+msgid "Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP."
+msgstr "Разрешить трафик QUIC (UDP порт 443). Если отключено, пакеты QUIC будут отбрасываться для принудительного перехода на TCP."
+
+
 
