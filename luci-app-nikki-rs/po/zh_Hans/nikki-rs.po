@@ -1268,3 +1268,135 @@ msgstr "放行 QUIC"
 msgid "Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP."
 msgstr "允许代理放行 QUIC 流量（UDP 443 端口）。禁用时将丢弃 QUIC 数据包以强制回退到 TCP。"
 
+
+msgid "DNS2 Config"
+msgstr "DNS2 配置"
+
+msgid "Enable DNS2"
+msgstr "启用 DNS2"
+
+msgid "Domestic and LAN domains use domestic DNS and return real IPs. Other domains use the foreign DNS mode. DNS2 takes priority over legacy DNS."
+msgstr "国内及局域网域名使用国内 DNS，返回真实 IP；其余域名使用国外解析模式。启用后优先于原 DNS 配置。"
+
+msgid "Domestic DNS"
+msgstr "国内 DNS"
+
+msgid "Supports IP addresses and udp://, tcp://, tls:// or https:// addresses. Always connects directly and returns real IPs."
+msgstr "支持 IP 地址及 udp://、tcp://、tls://、https:// 地址。始终直连解析并返回真实 IP。"
+
+msgid "Foreign DNS mode"
+msgstr "国外 DNS 类型"
+
+msgid "Real IP"
+msgstr "真实 IP"
+
+msgid "Foreign DNS"
+msgstr "国外 DNS"
+
+msgid "Foreign DNS outbound"
+msgstr "国外 DNS 出站"
+
+msgid "Use DIRECT or an existing proxy group or node name. In Fake IP mode, the proxy resolves domains when connecting."
+msgstr "填写 DIRECT 或已有的代理组、节点名称。Fake IP 模式由代理在建立连接时解析域名。"
+
+msgid "Resolve IPv6"
+msgstr "解析 IPv6"
+
+msgid "Listen address"
+msgstr "监听地址"
+
+msgid "DNS2 takes priority over legacy DNS. Configure upstreams and ordered routing rules below."
+msgstr "DNS2 优先于原 DNS 配置。请在下方配置上游及有序分流规则。"
+
+msgid "Hosts files"
+msgstr "Hosts 文件"
+
+msgid "Bootstrap DNS"
+msgstr "引导 DNS"
+
+msgid "Proxy Server Nameserver"
+msgstr "节点域名 DNS"
+
+msgid "Domestic DNS always connects directly and returns real IPs."
+msgstr "国内 DNS 始终直连解析并返回真实 IP。"
+
+msgid "Optimistic cache TTL"
+msgstr "乐观缓存最小 TTL"
+
+msgid "Stale cache retention"
+msgstr "过期缓存保留时间"
+
+msgid "Cache capacity"
+msgstr "缓存容量"
+
+msgid "DNS2 routing rules"
+msgstr "DNS2 分流规则"
+
+msgid "Rules match from top to bottom; first match wins. Drag rows to change priority. Fake IP is only a foreign-domain target; place domestic exceptions above it."
+msgstr "规则从上到下匹配，首条命中生效，可拖动调整顺序。Fake IP 仅用于国外域名，请将国内例外规则置于其前。"
+
+msgid "Query type"
+msgstr "查询类型"
+
+msgid "Source IP"
+msgstr "来源 IP"
+
+msgid "Rule set names must not be empty."
+msgstr "规则集名称不能为空。"
+
+msgid "Resolve DNS"
+msgstr "解析 DNS"
+
+msgid "Foreign Fake IP"
+msgstr "国外 Fake IP"
+
+msgid "Reject"
+msgstr "拒绝"
+
+msgid "Invert match"
+msgstr "反向匹配"
+
+msgid "Reject response"
+msgstr "拒绝响应"
+
+msgid "Unmatched domains"
+msgstr "未匹配域名"
+
+msgid "Used only after every enabled routing rule has been checked."
+msgstr "仅在所有启用的分流规则均未命中时使用。"
+
+msgid "Fake IP"
+msgstr "虚拟 IP（Fake IP）"
+
+msgid "Rules match from top to bottom; first match wins. Drag rows to change priority. Foreign DNS follows the selected Fake IP or Real IP setting. Domestic DNS always returns real IPs."
+msgstr "规则从上到下匹配，首条命中生效，可拖动调整顺序。国外 DNS 使用所选的 Fake IP 或真实 IP 类型，国内 DNS 始终返回真实 IP。"
+
+msgid "Combine conditions in one rule: (domain OR rule set) AND query type AND source IP. Empty conditions are ignored. Values within each condition use OR. At least one condition is required."
+msgstr "一条规则可组合多种条件：（域名或规则集）且查询类型且来源 IP。空条件不参与判断，同类多个值之间为“或”。至少填写一种条件。"
+
+msgid "At least one matching condition is required."
+msgstr "请至少填写一种匹配条件。"
+
+msgid "Basic settings"
+msgstr "基础设置"
+
+msgid "DNS upstreams"
+msgstr "DNS 上游"
+
+msgid "Hosts settings"
+msgstr "Hosts 设置"
+
+msgid "Cache settings"
+msgstr "缓存设置"
+
+msgid "Routing settings"
+msgstr "分流设置"
+
+msgid "Domestic DNS client subnet"
+msgstr "国内 DNS 客户端子网"
+
+msgid "Foreign DNS client subnet"
+msgstr "国外 DNS 客户端子网"
+
+msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
+msgstr "可选的 EDNS 客户端子网（IP 或 CIDR），例如 203.0.113.0/24。留空则不生成。"

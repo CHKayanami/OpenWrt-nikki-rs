@@ -1154,3 +1154,63 @@ msgstr "Разрешить трафик QUIC (UDP порт 443). Если отк
 
 
 
+
+msgid "Bootstrap DNS"
+msgstr "Загрузочный DNS"
+
+msgid "Domestic DNS"
+msgstr "Внутренний DNS"
+
+msgid "Foreign DNS"
+msgstr "Зарубежный DNS"
+
+msgid "Foreign DNS mode"
+msgstr "Тип зарубежного DNS"
+
+msgid "Proxy Server Nameserver"
+msgstr "DNS для имён прокси-серверов"
+
+msgid "Fake IP"
+msgstr "Виртуальный IP (Fake IP)"
+
+msgid "Real IP"
+msgstr "Реальный IP"
+
+msgid "Rules match from top to bottom; first match wins. Drag rows to change priority. Foreign DNS follows the selected Fake IP or Real IP setting. Domestic DNS always returns real IPs."
+msgstr "Правила проверяются сверху вниз до первого совпадения. Перетаскивайте строки для изменения приоритета. Зарубежный DNS использует выбранный тип IP, внутренний DNS всегда возвращает реальные IP-адреса."
+
+msgid "DNS2 routing rules"
+msgstr "Правила маршрутизации DNS2"
+
+msgid "Combine conditions in one rule: (domain OR rule set) AND query type AND source IP. Empty conditions are ignored. Values within each condition use OR. At least one condition is required."
+msgstr "Условия одного правила: (домен ИЛИ набор правил) И тип запроса И IP источника. Пустые условия игнорируются. Значения внутри условия объединяются через ИЛИ. Требуется хотя бы одно условие."
+
+msgid "At least one matching condition is required."
+msgstr "Укажите хотя бы одно условие сопоставления."
+
+msgid "Resolve DNS"
+msgstr "DNS для разрешения"
+
+msgid "Basic settings"
+msgstr "Основные настройки"
+
+msgid "DNS upstreams"
+msgstr "Вышестоящие DNS"
+
+msgid "Hosts settings"
+msgstr "Настройки Hosts"
+
+msgid "Cache settings"
+msgstr "Настройки кэша"
+
+msgid "Routing settings"
+msgstr "Настройки маршрутизации"
+
+msgid "Domestic DNS client subnet"
+msgstr "Клиентская подсеть внутреннего DNS"
+
+msgid "Foreign DNS client subnet"
+msgstr "Клиентская подсеть зарубежного DNS"
+
+msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
+msgstr "Необязательная подсеть клиента EDNS (IP или CIDR), например 203.0.113.0/24. Оставьте пустым, чтобы не добавлять."

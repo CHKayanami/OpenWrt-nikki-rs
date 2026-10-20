@@ -1263,3 +1263,63 @@ msgstr "放行 QUIC"
 msgid "Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP."
 msgstr "允許代理放行 QUIC 流量（UDP 443 連接埠）。停用時將丟棄 QUIC 封包以強制回退到 TCP。"
 
+
+msgid "Bootstrap DNS"
+msgstr "引導 DNS"
+
+msgid "Domestic DNS"
+msgstr "國內 DNS"
+
+msgid "Foreign DNS"
+msgstr "國外 DNS"
+
+msgid "Foreign DNS mode"
+msgstr "國外 DNS 類型"
+
+msgid "Proxy Server Nameserver"
+msgstr "節點網域 DNS"
+
+msgid "Fake IP"
+msgstr "虛擬 IP（Fake IP）"
+
+msgid "Real IP"
+msgstr "真實 IP"
+
+msgid "Rules match from top to bottom; first match wins. Drag rows to change priority. Foreign DNS follows the selected Fake IP or Real IP setting. Domestic DNS always returns real IPs."
+msgstr "規則由上到下比對，首條符合即生效，可拖曳調整順序。國外 DNS 使用所選的 Fake IP 或真實 IP 類型，國內 DNS 一律傳回真實 IP。"
+
+msgid "DNS2 routing rules"
+msgstr "DNS2 分流規則"
+
+msgid "Combine conditions in one rule: (domain OR rule set) AND query type AND source IP. Empty conditions are ignored. Values within each condition use OR. At least one condition is required."
+msgstr "一條規則可組合多種條件：（網域或規則集）且查詢類型且來源 IP。空條件不參與比對，同類多個值之間為「或」。至少填寫一種條件。"
+
+msgid "At least one matching condition is required."
+msgstr "請至少填寫一種比對條件。"
+
+msgid "Resolve DNS"
+msgstr "解析 DNS"
+
+msgid "Basic settings"
+msgstr "基本設定"
+
+msgid "DNS upstreams"
+msgstr "DNS 上游"
+
+msgid "Hosts settings"
+msgstr "Hosts 設定"
+
+msgid "Cache settings"
+msgstr "快取設定"
+
+msgid "Routing settings"
+msgstr "分流設定"
+
+msgid "Domestic DNS client subnet"
+msgstr "國內 DNS 用戶端子網"
+
+msgid "Foreign DNS client subnet"
+msgstr "國外 DNS 用戶端子網"
+
+msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
+msgstr "選填 EDNS 用戶端子網（IP 或 CIDR），例如 203.0.113.0/24。留空則不產生。"

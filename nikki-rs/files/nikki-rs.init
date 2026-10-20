@@ -217,9 +217,9 @@ start_service() {
 			config_foreach prepare_rule_provider "rule_provider"
 		fi
 		if [ "$mixin_file_content" = 0 ]; then
-			ucode -S "$MIXIN_UC" | yq -M -p json -o yaml | yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$RUN_PROFILE_PATH" -
+			ucode -S "$MIXIN_UC" | yq -M -p json -o yaml | yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | .dns2 = ($item.dns2 // $acc.dns2) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$RUN_PROFILE_PATH" -
 		elif [ "$mixin_file_content" = 1 ]; then
-			ucode -S "$MIXIN_UC" | yq -M -p json -o yaml | yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$RUN_PROFILE_PATH" "$MIXIN_FILE_PATH" -
+			ucode -S "$MIXIN_UC" | yq -M -p json -o yaml | yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | .dns2 = ($item.dns2 // $acc.dns2) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$RUN_PROFILE_PATH" "$MIXIN_FILE_PATH" -
 		fi
 		if [ "$proxy_enabled" = 1 ]; then
 			if yq -M -e 'has("tun")' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
@@ -234,7 +234,7 @@ start_service() {
 	if [ "$core_only" = 0 ] && [ "$proxy_enabled" = 1 ] && [ "$ebpf_enabled" = 0 ]; then
 		log "Profile" "Checking..."
 		if [ "$ipv4_dns_hijack" = 1 ] || [ "$ipv6_dns_hijack" = 1 ]; then
-			if yq -M -e '(has("dns") and (.dns | .enable) and (.dns | has("listen"))) | not' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
+			if yq -M -e '((.dns2.enable == true and .dns2.listen != null) or (.dns2.enable != true and .dns.enable == true and .dns.listen != null)) | not' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
 				log "Profile" "Check failed."
 				log "Profile" "DNS should be enabled and listen should be defined."
 				log "App" "Exit."
@@ -392,6 +392,11 @@ service_started() {
 	fi
 	local dns_mode; dns_mode=$(yq -M '.dns.enhanced-mode // ""' "$RUN_PROFILE_PATH")
 	local fake_ip6_range; fake_ip6_range=$(yq -M '.dns.fake-ip-range6 // ""' "$RUN_PROFILE_PATH")
+	if yq -M -e '.dns2.enable == true' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
+		dns_mode=""
+		fake_ip6_range=$(yq -M '[.dns2.upstreams[] | select(.type == "fakeip") | .inet6-range][0] // ""' "$RUN_PROFILE_PATH")
+		[ -n "$fake_ip6_range" ] && dns_mode="fake-ip"
+	fi
 	local tun_device; tun_device=$(yq -M "(.tun | select(.enable) | .device) // (.listeners[] | select(.name == \"$tun_listener_name\" and .type == \"tun\") | .device)" "$RUN_PROFILE_PATH")
 	if [ "$core_only" = 0 ]; then
 		# proxy

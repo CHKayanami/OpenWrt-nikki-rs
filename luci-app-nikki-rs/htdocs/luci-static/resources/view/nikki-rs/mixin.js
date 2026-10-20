@@ -787,6 +787,157 @@ return view.extend({
         o.value('tcp://any:53');
         o.value('udp://any:53');
 
+        s.tab('dns2', _('DNS2 Config'));
+
+        o = s.taboption('dns2', form.Flag, 'dns2_enabled', _('Enable DNS2'),
+            _('DNS2 takes priority over legacy DNS. Configure upstreams and ordered routing rules below.'));
+        o.default = '0';
+        o.rmempty = false;
+
+        function dns2Option(kind, name, title, def, datatype, description) {
+            var opt = s.taboption('dns2', kind, name, title, description);
+            opt.default = def;
+            opt.rmempty = false;
+            opt.retain = true;
+            opt.depends('dns2_enabled', '1');
+            if (datatype) opt.datatype = datatype;
+            return opt;
+        }
+        function dns2Heading(name, title) {
+            var heading = s.taboption('dns2', form.DummyValue, '_dns2_heading_' + name);
+            heading.depends('dns2_enabled', '1');
+            heading.render = function(section_id) {
+                return E('h3', { id: this.cbid(section_id), 'class': 'cbi-section-title' }, title);
+            };
+        }
+        dns2Heading('basic', _('Basic settings'));
+        dns2Option(form.Value, 'dns2_listen', _('DNS Listen'), '[::]:1053', 'ipaddrport(1)');
+        dns2Option(form.Flag, 'dns2_ipv6', 'IPv6', '1');
+        dns2Heading('upstreams', _('DNS upstreams'));
+        dns2Option(form.DynamicList, 'dns2_bootstrap', _('Bootstrap DNS'), ['223.5.5.5'], 'ipaddr');
+        o = dns2Option(form.DynamicList, 'dns2_proxy_servers', _('Proxy Server Nameserver'), []);
+        o.rmempty = true;
+        dns2Option(form.DynamicList, 'dns2_domestic_servers', _('Domestic DNS'), ['223.5.5.5'], null,
+            _('Domestic DNS always connects directly and returns real IPs.'));
+        o = dns2Option(form.Value, 'dns2_domestic_client_subnet', _('Domestic DNS client subnet'), '', 'or(ipaddr,cidr)',
+            _('Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit.'));
+        o.rmempty = true;
+        o = dns2Option(form.ListValue, 'dns2_foreign_mode', _('Foreign DNS mode'), 'fakeip');
+        o.value('fakeip', _('Fake IP'));
+        o.value('real', _('Real IP'));
+        o = dns2Option(form.DynamicList, 'dns2_foreign_servers', _('Foreign DNS'), ['1.1.1.1']);
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'real' });
+        o = dns2Option(form.Value, 'dns2_foreign_proxy', _('Foreign DNS outbound'), 'DIRECT');
+        o.value('DIRECT');
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'real' });
+        o = dns2Option(form.Value, 'dns2_foreign_client_subnet', _('Foreign DNS client subnet'), '', 'or(ipaddr,cidr)',
+            _('Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit.'));
+        o.rmempty = true;
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'real' });
+        o = dns2Option(form.Value, 'dns2_fake_ip_range', _('Fake-IP Range'), '198.18.0.1/16', 'cidr4');
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'fakeip' });
+        o = dns2Option(form.Value, 'dns2_fake_ip6_range', _('Fake-IP6 Range'), 'fc00::/18', 'cidr6');
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'fakeip' });
+        o = dns2Option(form.Value, 'dns2_fake_ip_ttl', _('Fake-IP TTL'), '1', 'uinteger');
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'fakeip' });
+        dns2Heading('hosts', _('Hosts settings'));
+        dns2Option(form.Flag, 'dns2_use_hosts', _('Use Hosts'), '1');
+        o = dns2Option(form.Flag, 'dns2_dnsmasq_hosts', _('Import dnsmasq Hosts'), '1');
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_use_hosts: '1' });
+        o = dns2Option(form.DynamicList, 'dns2_hosts_files', _('Hosts files'), []);
+        o.rmempty = true;
+        o.deps = [];
+        o.depends({ dns2_enabled: '1', dns2_use_hosts: '1' });
+
+        o = s.taboption('dns2', form.SectionValue, '_dns2_hosts', form.TableSection, 'dns2_hosts', _('Edit Hosts'));
+        o.depends({ dns2_enabled: '1', dns2_use_hosts: '1' });
+        o.retain = true;
+        o.subsection.anonymous = true;
+        o.subsection.addremove = true;
+        o.subsection.sortable = true;
+        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.default = '1';
+        so.rmempty = false;
+        so = o.subsection.option(form.Value, 'domain', _('Domain Name'));
+        so.rmempty = false;
+        so = o.subsection.option(form.DynamicList, 'ip', 'IP');
+        so.datatype = 'ipaddr';
+        so.rmempty = false;
+
+        dns2Heading('cache', _('Cache settings'));
+        dns2Option(form.Value, 'dns2_optimistic_cache_ttl', _('Optimistic cache TTL'), '0', 'uinteger');
+        dns2Option(form.Value, 'dns2_stale_cache_retention', _('Stale cache retention'), '3600', 'uinteger');
+        dns2Option(form.Value, 'dns2_cache_capacity', _('Cache capacity'), '4096', 'min(1)');
+
+        dns2Heading('routing', _('Routing settings'));
+        o = s.taboption('dns2', form.SectionValue, '_dns2_rules', form.GridSection, 'dns2_rule', _('DNS2 routing rules'),
+            _('Rules match from top to bottom; first match wins. Drag rows to change priority. Foreign DNS follows the selected Fake IP or Real IP setting. Domestic DNS always returns real IPs.'));
+        o.depends('dns2_enabled', '1');
+        o.retain = true;
+        o.subsection.anonymous = true;
+        o.subsection.addremove = true;
+        o.subsection.sortable = true;
+        o.subsection.description = _('Combine conditions in one rule: (domain OR rule set) AND query type AND source IP. Empty conditions are ignored. Values within each condition use OR. At least one condition is required.');
+        so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.default = '1';
+        so.rmempty = false;
+        so.editable = true;
+        so = o.subsection.option(form.DynamicList, 'domains', _('Domain Name'));
+        so.rmempty = true;
+        so = o.subsection.option(form.DynamicList, 'rule_sets', _('Rule Set'));
+        so.rmempty = true;
+        so = o.subsection.option(form.DynamicList, 'source_ip_cidrs', _('Source IP'));
+        so.datatype = 'or(ipaddr,cidr)';
+        so.rmempty = true;
+        so = o.subsection.option(form.MultiValue, 'query_types', _('Query type'));
+        so.rmempty = true;
+        ['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'NS', 'SOA', 'PTR', 'SRV', 'SVCB', 'HTTPS', 'ANY'].forEach(function(type) {
+            so.value(type);
+        });
+        so.cfgvalue = function(section_id) {
+            return L.toArray(uci.get('nikki-rs', section_id, 'query_types'));
+        };
+        so.write = function(section_id, value) {
+            uci.set('nikki-rs', section_id, 'query_types', L.toArray(value));
+        };
+        so = o.subsection.option(form.Flag, 'invert', _('Invert match'));
+        so.rmempty = false;
+        so.modalonly = true;
+        so = o.subsection.option(form.ListValue, 'target', _('Resolve DNS'));
+        so.value('direct-dns', _('Domestic DNS'));
+        so.value('proxy-dns', _('Foreign DNS'));
+        so.value('reject', _('Reject'));
+        so.default = 'direct-dns';
+        so.rmempty = false;
+        so.validate = function(section_id) {
+            var hasCondition = ['domains', 'rule_sets', 'source_ip_cidrs', 'query_types'].some(function(name) {
+                var option = this.map.lookupOption(name, section_id)[0];
+                return L.toArray(option.formvalue(section_id)).some(function(value) {
+                    return String(value).trim().length > 0;
+                });
+            }, this);
+            var enabled = this.map.lookupOption('enabled', section_id)[0].formvalue(section_id);
+            return enabled !== '1' || hasCondition || _('At least one matching condition is required.');
+        };
+        so = o.subsection.option(form.ListValue, 'reject_code', _('Reject response'));
+        so.value('nxdomain', 'NXDOMAIN');
+        so.value('nodata', 'NODATA');
+        so.default = 'nxdomain';
+        so.depends('target', 'reject');
+        so.modalonly = true;
+
+        o = dns2Option(form.ListValue, 'dns2_fallback', _('Unmatched domains'), 'proxy-dns', null,
+            _('Used only after every enabled routing rule has been checked.'));
+        o.value('direct-dns', _('Domestic DNS'));
+        o.value('proxy-dns', _('Foreign DNS'));
+
         s.tab('dns', _('DNS Config'));
 
         o = s.taboption('dns', form.ListValue, 'dns_enabled', _('Enable'));

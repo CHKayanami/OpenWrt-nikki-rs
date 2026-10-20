@@ -1247,3 +1247,135 @@ msgstr ""
 
 msgid "Allow QUIC traffic (UDP port 443). When disabled, QUIC packets are dropped to force fallback to TCP."
 msgstr ""
+
+msgid "DNS2 Config"
+msgstr ""
+
+msgid "Enable DNS2"
+msgstr ""
+
+msgid "Domestic and LAN domains use domestic DNS and return real IPs. Other domains use the foreign DNS mode. DNS2 takes priority over legacy DNS."
+msgstr ""
+
+msgid "Domestic DNS"
+msgstr ""
+
+msgid "Supports IP addresses and udp://, tcp://, tls:// or https:// addresses. Always connects directly and returns real IPs."
+msgstr ""
+
+msgid "Foreign DNS mode"
+msgstr ""
+
+msgid "Real IP"
+msgstr ""
+
+msgid "Foreign DNS"
+msgstr ""
+
+msgid "Foreign DNS outbound"
+msgstr ""
+
+msgid "Use DIRECT or an existing proxy group or node name. In Fake IP mode, the proxy resolves domains when connecting."
+msgstr ""
+
+msgid "Resolve IPv6"
+msgstr ""
+
+msgid "Listen address"
+msgstr ""
+
+msgid "DNS2 takes priority over legacy DNS. Configure upstreams and ordered routing rules below."
+msgstr ""
+
+msgid "Hosts files"
+msgstr ""
+
+msgid "Bootstrap DNS"
+msgstr ""
+
+msgid "Proxy Server Nameserver"
+msgstr ""
+
+msgid "Domestic DNS always connects directly and returns real IPs."
+msgstr ""
+
+msgid "Optimistic cache TTL"
+msgstr ""
+
+msgid "Stale cache retention"
+msgstr ""
+
+msgid "Cache capacity"
+msgstr ""
+
+msgid "DNS2 routing rules"
+msgstr ""
+
+msgid "Rules match from top to bottom; first match wins. Drag rows to change priority. Fake IP is only a foreign-domain target; place domestic exceptions above it."
+msgstr ""
+
+msgid "Query type"
+msgstr ""
+
+msgid "Source IP"
+msgstr ""
+
+msgid "Rule set names must not be empty."
+msgstr ""
+
+msgid "Resolve DNS"
+msgstr ""
+
+msgid "Foreign Fake IP"
+msgstr ""
+
+msgid "Reject"
+msgstr ""
+
+msgid "Invert match"
+msgstr ""
+
+msgid "Reject response"
+msgstr ""
+
+msgid "Unmatched domains"
+msgstr ""
+
+msgid "Used only after every enabled routing rule has been checked."
+msgstr ""
+
+msgid "Fake IP"
+msgstr ""
+
+msgid "Rules match from top to bottom; first match wins. Drag rows to change priority. Foreign DNS follows the selected Fake IP or Real IP setting. Domestic DNS always returns real IPs."
+msgstr ""
+
+msgid "Combine conditions in one rule: (domain OR rule set) AND query type AND source IP. Empty conditions are ignored. Values within each condition use OR. At least one condition is required."
+msgstr ""
+
+msgid "At least one matching condition is required."
+msgstr ""
+
+msgid "Basic settings"
+msgstr ""
+
+msgid "DNS upstreams"
+msgstr ""
+
+msgid "Hosts settings"
+msgstr ""
+
+msgid "Cache settings"
+msgstr ""
+
+msgid "Routing settings"
+msgstr ""
+
+msgid "Domestic DNS client subnet"
+msgstr ""
+
+msgid "Foreign DNS client subnet"
+msgstr ""
+
+msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
+msgstr ""

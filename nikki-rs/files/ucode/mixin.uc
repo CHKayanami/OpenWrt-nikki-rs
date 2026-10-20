@@ -315,4 +315,97 @@ if (uci_bool(uci.get('nikki-rs', 'ebpf', 'enabled'))) {
 	};
 }
 
+// Ordered request rules select domestic DNS, foreign DNS (Fake IP or real IP), or reject.
+if (uci_bool(uci.get('nikki-rs', 'mixin', 'dns2_enabled'))) {
+	const get = (key, fallback) => uci.get('nikki-rs', 'mixin', 'dns2_' + key) ?? fallback;
+	const domestic = uci_array(get('domestic_servers', ['223.5.5.5']));
+	const foreign = uci_array(get('foreign_servers', ['1.1.1.1']));
+	const mode = get('foreign_mode', 'fakeip');
+	if (index(['fakeip', 'real'], mode) < 0) die('Invalid DNS2 foreign mode');
+	const listen = get('listen', '[::]:1053');
+	const request = [];
+	uci.foreach('nikki-rs', 'dns2_rule', (section) => {
+		if (!uci_bool(section.enabled)) return;
+		if (index(['direct-dns', 'proxy-dns', 'reject'], section.target) < 0)
+			die('Invalid DNS2 target');
+		const rule = { invert: uci_bool(section.invert) };
+		let conditions = 0;
+		for (let field in [
+			['domains', 'domain'], ['rule_sets', 'rule-set'],
+			['query_types', 'query-type'], ['source_ip_cidrs', 'source-ip-cidr']
+		]) {
+			const values = filter(uci_array(section[field[0]]), (value) => length(trim(value)) > 0);
+			if (length(values)) {
+				rule[field[1]] = values;
+				conditions++;
+			}
+		}
+		if (!conditions) die('DNS2 routing rule requires at least one matching condition');
+		if (section.target == 'reject') {
+			rule.action = 'reject';
+			rule['reject-code'] = section.reject_code || 'nxdomain';
+		} else {
+			rule.upstream = section.target;
+		}
+		push(request, rule);
+	});
+	const fallback = get('fallback', 'proxy-dns');
+	if (index(['direct-dns', 'proxy-dns'], fallback) < 0) die('Invalid DNS2 fallback');
+	push(request, { fallback: fallback });
+	const hosts = {};
+	if (uci_bool(get('use_hosts', '1')) && uci_bool(get('dnsmasq_hosts', '1'))) {
+		let suffix = '';
+		uci.foreach('dhcp', 'dnsmasq', (section) => {
+			if (section.domain) suffix = section.domain;
+		});
+		const import_host = (section, qualify) => {
+			const ips = uci_array(section.ip);
+			if (!section.name || !length(ips)) return;
+			for (let names in uci_array(section.name)) {
+				for (let name in split(names, ' ')) {
+					if (!length(name)) continue;
+					hosts[name] = ips;
+					if (qualify && suffix != '' && index(name, '.') == -1)
+						hosts[name + '.' + suffix] = ips;
+				}
+			}
+		};
+		uci.foreach('dhcp', 'domain', (section) => import_host(section, false));
+		uci.foreach('dhcp', 'host', (section) => import_host(section, true));
+	}
+	// Explicit DNS2 hosts take precedence over imported dnsmasq entries.
+	uci.foreach('nikki-rs', 'dns2_hosts', (section) => {
+		if (uci_bool(section.enabled) && section.domain) hosts[section.domain] = uci_array(section.ip);
+	});
+	config['dns']['enable'] = false;
+	config['dns2'] = {
+		enable: true,
+		listen: listen,
+		ipv6: uci_bool(get('ipv6', '1')),
+		'use-hosts': uci_bool(get('use_hosts', '1')),
+		hosts: hosts,
+		'hosts-files': uci_array(get('hosts_files', [])),
+		'default-nameserver': uci_array(get('bootstrap', ['223.5.5.5'])),
+		'proxy-server-nameserver': uci_array(get('proxy_servers', [])),
+		'optimistic-cache-ttl': uci_int(get('optimistic_cache_ttl', '0')),
+		'stale-cache-retention': uci_int(get('stale_cache_retention', '3600')),
+		'cache-capacity': uci_int(get('cache_capacity', '4096')),
+		upstreams: [
+			{ tag: 'direct-dns', type: 'remote', servers: domestic },
+			mode == 'real' ? { tag: 'proxy-dns', type: 'remote', servers: foreign }
+			: { tag: 'proxy-dns', type: 'fakeip', 'inet4-range': get('fake_ip_range', '198.18.0.1/16'),
+				'inet6-range': get('fake_ip6_range', 'fc00::/18'), ttl: uci_int(get('fake_ip_ttl', '1')) }
+		],
+		routing: { request: request }
+	};
+	const domestic_subnet = trim(get('domestic_client_subnet', ''));
+	const foreign_subnet = trim(get('foreign_client_subnet', ''));
+	if (length(domestic_subnet)) config['dns2']['upstreams'][0]['client-subnet'] = domestic_subnet;
+	if (mode == 'real' && length(foreign_subnet)) config['dns2']['upstreams'][1]['client-subnet'] = foreign_subnet;
+	const foreign_proxy = trim(get('foreign_proxy', 'DIRECT'));
+	if (mode == 'real' && length(foreign_proxy) && lc(foreign_proxy) != 'direct')
+		config['dns2']['upstreams'][1]['proxy'] = foreign_proxy;
+
+}
+
 print(trim_all(config));
