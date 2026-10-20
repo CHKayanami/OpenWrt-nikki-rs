@@ -311,16 +311,13 @@ start_service() {
 	mkdir -p "/etc/crontabs"
 	touch "/etc/crontabs/root"
 	sed -i "/#nikki-rs/d" "/etc/crontabs/root" > /dev/null 2>&1
-	local reload_cron; reload_cron=0
 	if [ "$scheduled_restart" = 1 ] && [ -n "$scheduled_restart_cron" ]; then
 		log "App" "Set scheduled restart."
 		echo "$scheduled_restart_cron /etc/init.d/nikki-rs restart #nikki-rs scheduled restart" >> "/etc/crontabs/root"
-		reload_cron=1
 	fi
 	if [ "$log_scheduled_clear" = 1 ] && [ -n "$log_scheduled_clear_cron" ]; then
 		log "App" "Set log scheduled clear."
 		echo "$log_scheduled_clear_cron /etc/init.d/nikki-rs clear_logs #nikki-rs log scheduled clear" >> "/etc/crontabs/root"
-		reload_cron=1
 	fi
 	local mixin_rule_provider rule_provider_scheduled_update rule_provider_scheduled_update_cron
 	config_get_bool mixin_rule_provider "mixin" "rule_provider" 0
@@ -329,10 +326,6 @@ start_service() {
 	if [ "$mixin_rule_provider" = 1 ] && [ "$rule_provider_scheduled_update" = 1 ] && [ -n "$rule_provider_scheduled_update_cron" ]; then
 		log "App" "Set scheduled update for rule providers."
 		echo "$rule_provider_scheduled_update_cron /etc/init.d/nikki-rs update_rule_provider #nikki-rs rule_provider scheduled update" >> "/etc/crontabs/root"
-		reload_cron=1
-	fi
-	if [ "$reload_cron" = 1 ]; then
-		/etc/init.d/cron restart
 	fi
 	# set started flag
 	touch "$STARTED_FLAG_PATH"
@@ -551,7 +544,6 @@ cleanup() {
 	fi
 	# delete cron
 	sed -i "/#nikki-rs/d" "/etc/crontabs/root" > /dev/null 2>&1
-	/etc/init.d/cron restart
 }
 
 clear_logs() {

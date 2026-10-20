@@ -20,7 +20,8 @@
                 "/etc/nikki-rs/run/providers/rule/*": ["read"],
                 "/etc/nikki-rs/run/providers/proxy/*": ["read"],
                 "/etc/nikki-rs/nftables/*": ["read"],
-                "/var/log/nikki-rs/*.log": ["read"]
+                "/var/log/nikki-rs/*.log": ["read"],
+                "/tmp/log/nikki-rs/*.log": ["read"]
             }
         },
         "write": {
@@ -38,7 +39,8 @@
                 "/etc/nikki-rs/run/providers/rule/*": ["write"],
                 "/etc/nikki-rs/run/providers/proxy/*": ["write"],
                 "/etc/nikki-rs/nftables/*": ["write"],
-                "/var/log/nikki-rs/*.log": ["write"]
+                "/var/log/nikki-rs/*.log": ["write"],
+                "/tmp/log/nikki-rs/*.log": ["write"]
             }
         }
     }
