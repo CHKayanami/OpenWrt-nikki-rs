@@ -24,6 +24,8 @@ boot_func() {
 	config_get_bool enabled "config" "enabled" 0
 	config_get_bool boot_start "config" "boot_start" 0
 	if [ "$enabled" = 0 ] || [ "$boot_start" = 0 ]; then
+		# Register config reload triggers without starting a core instance.
+		rc_procd :
 		log "App" "Boot start disabled."
 		log "App" "Exit."
 		return
