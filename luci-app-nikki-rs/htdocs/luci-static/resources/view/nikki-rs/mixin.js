@@ -846,6 +846,33 @@ return view.extend({
         o = dns2Option(form.Value, 'dns2_fake_ip_ttl', _('Fake-IP TTL'), '1', 'uinteger');
         o.deps = [];
         o.depends({ dns2_enabled: '1', dns2_foreign_mode: 'fakeip' });
+        // Truncate long DNS2 values visually while retaining the full editable value.
+        function dns2TableLayout(section) {
+            var render = section.render;
+            section.render = function() {
+                return Promise.resolve(render.apply(this, arguments)).then(function(node) {
+                    node.classList.add('nikki-dns2-table');
+                    node.querySelectorAll('.td[data-widget="CBI.DummyValue"]').forEach(function(cell) {
+                        var preview = E('span', {
+                            'class': 'nikki-dns2-preview',
+                            title: cell.textContent.trim()
+                        }, Array.from(cell.childNodes));
+                        cell.replaceChildren(preview);
+                    });
+                    node.querySelectorAll('.td:not(.cbi-section-actions)').forEach(function(cell) {
+                        cell.title = cell.textContent.trim();
+                    });
+                    node.querySelectorAll('input:not([type="checkbox"])').forEach(function(input) {
+                        input.title = input.value;
+                    });
+                    node.addEventListener('input', function(event) {
+                        if (event.target.matches('input:not([type="checkbox"])'))
+                            event.target.title = event.target.value;
+                    });
+                    return node;
+                });
+            };
+        }
         dns2Heading('hosts', _('Hosts settings'));
         dns2Option(form.Flag, 'dns2_use_hosts', _('Use Hosts'), '1');
         o = dns2Option(form.Flag, 'dns2_dnsmasq_hosts', _('Import dnsmasq Hosts'), '1');
@@ -862,10 +889,13 @@ return view.extend({
         o.subsection.anonymous = true;
         o.subsection.addremove = true;
         o.subsection.sortable = true;
+        dns2TableLayout(o.subsection);
         so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.width = '4rem';
         so.default = '1';
         so.rmempty = false;
         so = o.subsection.option(form.Value, 'domain', _('Domain Name'));
+        so.width = '40%';
         so.rmempty = false;
         so = o.subsection.option(form.DynamicList, 'ip', 'IP');
         so.datatype = 'ipaddr';
@@ -884,8 +914,10 @@ return view.extend({
         o.subsection.anonymous = true;
         o.subsection.addremove = true;
         o.subsection.sortable = true;
+        dns2TableLayout(o.subsection);
         o.subsection.description = _('Combine conditions in one rule: (domain OR rule set) AND query type AND source IP. Empty conditions are ignored. Values within each condition use OR. At least one condition is required.');
         so = o.subsection.option(form.Flag, 'enabled', _('Enable'));
+        so.width = '4rem';
         so.default = '1';
         so.rmempty = false;
         so.editable = true;
@@ -911,6 +943,7 @@ return view.extend({
         so.rmempty = false;
         so.modalonly = true;
         so = o.subsection.option(form.ListValue, 'target', _('Resolve DNS'));
+        so.width = '8rem';
         so.value('direct-dns', _('Domestic DNS'));
         so.value('proxy-dns', _('Foreign DNS'));
         so.value('reject', _('Reject'));
@@ -1329,6 +1362,56 @@ return view.extend({
         o = s.taboption('mixin_file_content', form.Flag, 'mixin_file_content', _('Enable'), _('Please go to the editor tab to edit the file for mixin'));
         o.rmempty = false;
 
-        return m.render();
+        return m.render().then(function(node) {
+            node.prepend(E('style', {}, `
+                .nikki-dns2-table .table {
+                    width: 100%;
+                    table-layout: fixed;
+                }
+                .nikki-dns2-table .table > * > .tr > .td,
+                .nikki-dns2-table .table > * > .tr > .th {
+                    min-width: 0;
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .nikki-dns2-table .nikki-dns2-preview {
+                    display: block;
+                    max-width: 100%;
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .nikki-dns2-table .cbi-section-actions {
+                    width: 10rem;
+                    overflow: visible !important;
+                }
+                .nikki-dns2-table .td input:not([type="checkbox"]),
+                .nikki-dns2-table .td select,
+                .nikki-dns2-table .td .cbi-value-field,
+                .nikki-dns2-table .td .cbi-dynlist,
+                .nikki-dns2-table .td .cbi-dynlist > .item,
+                .nikki-dns2-table .td .cbi-dropdown {
+                    min-width: 0;
+                    max-width: 100%;
+                    box-sizing: border-box;
+                }
+                .nikki-dns2-table .td input:not([type="checkbox"]) {
+                    text-overflow: ellipsis;
+                }
+                .nikki-dns2-table .td .cbi-dynlist > .item {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    overflow: hidden;
+                }
+                .nikki-dns2-table .td .cbi-dynlist > .item > span {
+                    min-width: 0;
+                    white-space: nowrap !important;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            `));
+            return node;
+        });
     }
 });
