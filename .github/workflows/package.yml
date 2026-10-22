@@ -1,0 +1,133 @@
+name: package
+
+on:
+  workflow_call:
+    inputs:
+      sign:
+        type: boolean
+        default: false
+      update_core:
+        type: boolean
+        default: false
+      upload_feed:
+        type: boolean
+        default: false
+      artifact_retention_days:
+        type: number
+        default: 1
+    secrets:
+      KEY_BUILD:
+        required: false
+      PRIVATE_KEY:
+        required: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install native tool dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake meson ninja-build pkg-config libssl-dev zlib1g-dev fakeroot
+
+      - name: Cache native packaging tools
+        uses: actions/cache@v4
+        with:
+          path: .build-tools/bin
+          key: native-packaging-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/packaging/setup-tools.sh') }}
+
+      - name: Build native tools
+        run: |
+          bash scripts/packaging/setup-tools.sh
+          echo "$GITHUB_WORKSPACE/.build-tools/bin" >> "$GITHUB_PATH"
+
+      - name: Update core version when requested
+        if: inputs.update_core
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLASH_RS_CACHE_DIR: .package-cache
+        run: bash scripts/packaging/update-clash-rs.sh
+
+      - name: Cache prebuilt core archives
+        uses: actions/cache@v4
+        with:
+          path: .package-cache
+          key: core-archives-${{ hashFiles('clash-rs/Makefile') }}
+
+      - name: Test packaging behavior
+        run: python3 -m unittest discover -s tests -p 'test_packaging.py' -v
+
+      - name: Prepare common files and five prebuilt cores
+        run: |
+          python3 scripts/packaging/pack.py prepare
+          # Artifact uploads normalize file modes; transport the payload as tar
+          # so scripts stay executable and UCI configuration stays mode 0600.
+          tar -czf package-inputs.tar.gz .package-work .build-tools/bin
+
+      - name: Upload prepared files and native tools
+        uses: actions/upload-artifact@v7
+        with:
+          name: package-inputs
+          retention-days: 1
+          compression-level: 0
+          path: package-inputs.tar.gz
+
+  package:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [openwrt-24.10, openwrt-25.12, SNAPSHOT]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: package-inputs
+
+      - name: Restore native tool permissions
+        run: |
+          tar -xzf package-inputs.tar.gz
+          echo "$GITHUB_WORKSPACE/.build-tools/bin" >> "$GITHUB_PATH"
+
+      - name: Install archive ownership tool
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot
+
+      - name: Package each architecture and index the feeds
+        env:
+          KEY_BUILD: ${{ secrets.KEY_BUILD }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SIGN_PACKAGES: ${{ inputs.sign }}
+        run: |
+          options=()
+          if [[ "$SIGN_PACKAGES" == true ]]; then options+=(--sign); fi
+          python3 scripts/packaging/pack.py build --branch '${{ matrix.branch }}' "${options[@]}"
+          python3 scripts/packaging/verify.py --branch '${{ matrix.branch }}'
+
+      - name: Archive feed tree for publishing
+        if: inputs.upload_feed
+        run: tar -czf 'feed_nikki_rs_${{ matrix.branch }}.tar.gz' -C .package-output public
+
+      - name: Upload release archives
+        uses: actions/upload-artifact@v7
+        with:
+          name: nikki-rs_${{ matrix.branch }}
+          retention-days: ${{ inputs.artifact_retention_days }}
+          compression-level: 0
+          path: .package-output/release/*.tar.gz
+
+      - name: Upload feed tree
+        if: inputs.upload_feed
+        uses: actions/upload-artifact@v7
+        with:
+          name: feed_nikki_rs_${{ matrix.branch }}
+          retention-days: ${{ inputs.artifact_retention_days }}
+          compression-level: 0
+          path: feed_nikki_rs_${{ matrix.branch }}.tar.gz

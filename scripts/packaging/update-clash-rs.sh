@@ -2,9 +2,10 @@
 set -eo pipefail
 
 REPO="CHKayanami/clash-rs"
-MAKEFILE="clash-rs/Makefile"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+MAKEFILE="$script_dir/../../clash-rs/Makefile"
 
-# 支持传入指定版本号，例如: ./update-clash-rs.sh 0.1.7
+# 支持传入指定版本号，例如: bash scripts/packaging/update-clash-rs.sh 0.1.7
 INPUT_VER="$1"
 
 echo "🔍 正在检查 $REPO 的最新发布版本..."
@@ -58,7 +59,25 @@ echo "📥 正在实时下载并计算各架构的 SHA256 哈希值..."
 get_hash() {
   local target="$1"
   local url="https://github.com/${REPO}/releases/download/${TAG_NAME}/clash-rs-minimal-${target}.tar.gz"
-  curl -sL -H "User-Agent: OpenWrt-nikki-build" "$url" | sha256sum | awk '{print $1}'
+  local archive digest cache_dir
+  archive=$(mktemp)
+  if ! curl -fsSL --retry 3 -H "User-Agent: OpenWrt-nikki-build" "$url" -o "$archive"; then
+    rm -f "$archive"
+    return 1
+  fi
+  if ! tar -tzf "$archive" >/dev/null; then
+    rm -f "$archive"
+    return 1
+  fi
+  digest=$(sha256sum "$archive" | awk '{print $1}')
+  if [ -n "${CLASH_RS_CACHE_DIR:-}" ]; then
+    cache_dir="$CLASH_RS_CACHE_DIR/$digest"
+    mkdir -p "$cache_dir"
+    mv "$archive" "$cache_dir/clash-rs-minimal-${target}.tar.gz"
+  else
+    rm -f "$archive"
+  fi
+  echo "$digest"
 }
 
 HASH_X86_64=$(get_hash "x86_64-unknown-linux-musl")

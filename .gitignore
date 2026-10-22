@@ -2,3 +2,8 @@ deploy.sh
 build.sh
 test.md
 .DS_Store
+.build-tools/
+.package-work/
+.package-cache/
+.package-output/
+__pycache__/
