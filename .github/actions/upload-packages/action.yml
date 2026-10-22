@@ -1,0 +1,132 @@
+name: Upload architecture packages
+description: Upload one temporary artifact per architecture and OpenWrt branch
+inputs:
+  branch:
+    description: OpenWrt branch
+    required: true
+  retention-days:
+    description: Artifact retention in days
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Upload arm_cortex-a5_vfpv4
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a5_vfpv4-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a5_vfpv4-${{ inputs.branch }}.tar.gz
+    - name: Upload arm_cortex-a7_neon-vfpv4
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a7_neon-vfpv4-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a7_neon-vfpv4-${{ inputs.branch }}.tar.gz
+    - name: Upload arm_cortex-a8_vfpv3
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a8_vfpv3-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a8_vfpv3-${{ inputs.branch }}.tar.gz
+    - name: Upload arm_cortex-a9
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a9-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a9-${{ inputs.branch }}.tar.gz
+    - name: Upload arm_cortex-a9_vfpv3-d16
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a9_vfpv3-d16-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a9_vfpv3-d16-${{ inputs.branch }}.tar.gz
+    - name: Upload arm_cortex-a9_neon
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a9_neon-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a9_neon-${{ inputs.branch }}.tar.gz
+    - name: Upload arm_cortex-a15_neon-vfpv4
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_arm_cortex-a15_neon-vfpv4-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_arm_cortex-a15_neon-vfpv4-${{ inputs.branch }}.tar.gz
+    - name: Upload aarch64_cortex-a53
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_aarch64_cortex-a53-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_aarch64_cortex-a53-${{ inputs.branch }}.tar.gz
+    - name: Upload aarch64_cortex-a72
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_aarch64_cortex-a72-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_aarch64_cortex-a72-${{ inputs.branch }}.tar.gz
+    - name: Upload aarch64_cortex-a76
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_aarch64_cortex-a76-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_aarch64_cortex-a76-${{ inputs.branch }}.tar.gz
+    - name: Upload aarch64_generic
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_aarch64_generic-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_aarch64_generic-${{ inputs.branch }}.tar.gz
+    - name: Upload riscv64_riscv64
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_riscv64_riscv64-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_riscv64_riscv64-${{ inputs.branch }}.tar.gz
+    - name: Upload riscv64_generic
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_riscv64_generic-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_riscv64_generic-${{ inputs.branch }}.tar.gz
+    - name: Upload i386_pentium4
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_i386_pentium4-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_i386_pentium4-${{ inputs.branch }}.tar.gz
+    - name: Upload x86_64
+      uses: actions/upload-artifact@v7
+      with:
+        name: nikki-rs_x86_64-${{ inputs.branch }}
+        retention-days: ${{ inputs.retention-days }}
+        compression-level: 0
+        if-no-files-found: ignore
+        path: .package-output/release/nikki-rs_x86_64-${{ inputs.branch }}.tar.gz

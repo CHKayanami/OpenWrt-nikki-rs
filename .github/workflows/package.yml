@@ -116,12 +116,10 @@ jobs:
         run: tar -czf 'feed_nikki_rs_${{ matrix.branch }}.tar.gz' -C .package-output public
 
       - name: Upload release archives
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/upload-packages
         with:
-          name: nikki-rs_${{ matrix.branch }}
+          branch: ${{ matrix.branch }}
           retention-days: ${{ inputs.artifact_retention_days }}
-          compression-level: 0
-          path: .package-output/release/*.tar.gz
 
       - name: Upload feed tree
         if: inputs.upload_feed
