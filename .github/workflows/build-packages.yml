@@ -2,11 +2,6 @@ name: build-packages
 
 on:
   workflow_dispatch:
-    inputs:
-      update_core:
-        description: Update clash-rs to the latest release
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -15,6 +10,5 @@ jobs:
   packages:
     uses: ./.github/workflows/package.yml
     with:
-      update_core: ${{ inputs.update_core || false }}
       upload_feed: false
       artifact_retention_days: 1

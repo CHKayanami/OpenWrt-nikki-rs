@@ -6,9 +6,6 @@ on:
       sign:
         type: boolean
         default: false
-      update_core:
-        type: boolean
-        default: false
       upload_feed:
         type: boolean
         default: false
@@ -45,8 +42,7 @@ jobs:
           bash scripts/packaging/setup-tools.sh
           echo "$GITHUB_WORKSPACE/.build-tools/bin" >> "$GITHUB_PATH"
 
-      - name: Update core version when requested
-        if: inputs.update_core
+      - name: Update core to the latest release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLASH_RS_CACHE_DIR: .package-cache

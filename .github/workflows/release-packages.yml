@@ -2,11 +2,6 @@ name: release-packages
 
 on:
   workflow_dispatch:
-    inputs:
-      update_core:
-        description: Update clash-rs to the latest release
-        type: boolean
-        default: false
   push:
     tags:
       - v*
@@ -21,7 +16,6 @@ jobs:
       sign: true
       upload_feed: true
       artifact_retention_days: 7
-      update_core: ${{ inputs.update_core || false }}
     secrets: inherit
 
   release:
