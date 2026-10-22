@@ -44,6 +44,84 @@ boot() {
 	boot_func < /dev/null > /dev/null 2>&1 &
 }
 
+# Build the mixin in isolation so failures never publish a partial profile.
+mixin_profile() (
+	mixin_target="$RUN_PROFILE_PATH"
+	mixin_tmpdir=$(mktemp -d "$RUN_DIR/.mixin.XXXXXX") || exit 1
+	trap 'rm -rf "$mixin_tmpdir"' EXIT
+	cp -f "$mixin_target" "$mixin_tmpdir/config.yaml" || exit 1
+	RUN_PROFILE_PATH="$mixin_tmpdir/config.yaml"
+	log "Mixin" "Mixin config."
+	if [ "$overwrite_authentication" = 1 ]; then
+		yq -M -i 'del(.authentication)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_tun_dns_hijack" = 1 ]; then
+		yq -M -i 'del(.tun.dns-hijack)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_fake_ip_filter" = 1 ]; then
+		yq -M -i 'del(.dns.fake-ip-filter)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_black_filter" = 1 ]; then
+		yq -M -i 'del(.dns.black-filter)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_hosts" = 1 ]; then
+		yq -M -i 'del(.hosts)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_dns_nameserver" = 1 ]; then
+		yq -M -i 'del(.dns.default-nameserver) | del(.dns.proxy-server-nameserver) | del(.dns.direct-nameserver) | del(.dns.nameserver) | del(.dns.fallback) ' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_dns_proxy_server_nameserver" = 1 ]; then
+		yq -M -i 'del(.dns.proxy-server-nameserver)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_dns_nameserver_policy" = 1 ]; then
+		yq -M -i 'del(.dns.nameserver-policy)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_sniffer_force_domain_name" = 1 ]; then
+		yq -M -i 'del(.sniffer.force-domain)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_sniffer_ignore_domain_name" = 1 ]; then
+		yq -M -i 'del(.sniffer.skip-domain)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_sniffer_sniff" = 1 ]; then
+		yq -M -i 'del(.sniffer.sniff)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_mmdb" = 1 ]; then
+		yq -M -i 'del(.mmdb) | del(.mmdb-download-url)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_geosite" = 1 ]; then
+		yq -M -i 'del(.geosite) | del(.geosite-download-url)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$overwrite_asn_mmdb" = 1 ]; then
+		yq -M -i 'del(.asn-mmdb) | del(.asn-mmdb-download-url)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	if [ "$ui_internal" = 1 ]; then
+		yq -M -i 'del(.external-ui) | del(.external-ui-name) | del(.external-ui-url)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+	fi
+	yq -M -i 'del(.ebpf)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+
+	local mixin_rule_provider; config_get_bool mixin_rule_provider "mixin" "rule_provider" 0
+	if [ "$mixin_rule_provider" = 1 ]; then
+		config_foreach prepare_rule_provider "rule_provider"
+	fi
+	ucode -S "$MIXIN_UC" > "$mixin_tmpdir/mixin.json" 2>> "$APP_LOG_PATH" || exit 1
+	yq -M -p json -o yaml "$mixin_tmpdir/mixin.json" > "$mixin_tmpdir/mixin.yaml" 2>> "$APP_LOG_PATH" || exit 1
+	if [ "$mixin_file_content" = 1 ]; then
+		set -- "$RUN_PROFILE_PATH" "$MIXIN_FILE_PATH" "$mixin_tmpdir/mixin.yaml"
+	else
+		set -- "$RUN_PROFILE_PATH" "$mixin_tmpdir/mixin.yaml"
+	fi
+	yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | .dns2 = ($item.dns2 // $acc.dns2) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$@" 2>> "$APP_LOG_PATH" || exit 1
+	if [ "$proxy_enabled" = 1 ]; then
+		if yq -M -e 'has("tun")' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
+			yq -M -i '(.tun) |= (.auto-route = false | .auto-redirect = false | .auto-detect-interface = false | .disable-icmp-forwarding = true)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+		fi
+		if yq -M -e 'has("listeners")' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
+			yq -M -i '(.listeners[] | select(.type == "tun")) |= (.auto-route = false | .auto-redirect = false | .auto-detect-interface = false | .disable-icmp-forwarding = true)' "$RUN_PROFILE_PATH" 2>> "$APP_LOG_PATH" || exit 1
+		fi
+	fi
+	mv -f "$RUN_PROFILE_PATH" "$mixin_target" || exit 1
+)
+
 start_service() {
 	# prepare files
 	prepare_files
@@ -166,70 +244,10 @@ start_service() {
 	fi
 	# mixin
 	if [ "$core_only" = 0 ]; then
-		log "Mixin" "Mixin config."
-		if [ "$overwrite_authentication" = 1 ]; then
-			yq -M -i 'del(.authentication)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_tun_dns_hijack" = 1 ]; then
-			yq -M -i 'del(.tun.dns-hijack)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_fake_ip_filter" = 1 ]; then
-			yq -M -i 'del(.dns.fake-ip-filter)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_black_filter" = 1 ]; then
-			yq -M -i 'del(.dns.black-filter)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_hosts" = 1 ]; then
-			yq -M -i 'del(.hosts)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_dns_nameserver" = 1 ]; then
-			yq -M -i 'del(.dns.default-nameserver) | del(.dns.proxy-server-nameserver) | del(.dns.direct-nameserver) | del(.dns.nameserver) | del(.dns.fallback) ' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_dns_proxy_server_nameserver" = 1 ]; then
-			yq -M -i 'del(.dns.proxy-server-nameserver)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_dns_nameserver_policy" = 1 ]; then
-			yq -M -i 'del(.dns.nameserver-policy)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_sniffer_force_domain_name" = 1 ]; then
-			yq -M -i 'del(.sniffer.force-domain)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_sniffer_ignore_domain_name" = 1 ]; then
-			yq -M -i 'del(.sniffer.skip-domain)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_sniffer_sniff" = 1 ]; then
-			yq -M -i 'del(.sniffer.sniff)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_mmdb" = 1 ]; then
-			yq -M -i 'del(.mmdb) | del(.mmdb-download-url)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_geosite" = 1 ]; then
-			yq -M -i 'del(.geosite) | del(.geosite-download-url)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$overwrite_asn_mmdb" = 1 ]; then
-			yq -M -i 'del(.asn-mmdb) | del(.asn-mmdb-download-url)' "$RUN_PROFILE_PATH"
-		fi
-		if [ "$ui_internal" = 1 ]; then
-			yq -M -i 'del(.external-ui) | del(.external-ui-name) | del(.external-ui-url)' "$RUN_PROFILE_PATH"
-		fi
-		yq -M -i 'del(.ebpf)' "$RUN_PROFILE_PATH"
-
-		local mixin_rule_provider; config_get_bool mixin_rule_provider "mixin" "rule_provider" 0
-		if [ "$mixin_rule_provider" = 1 ]; then
-			config_foreach prepare_rule_provider "rule_provider"
-		fi
-		if [ "$mixin_file_content" = 0 ]; then
-			ucode -S "$MIXIN_UC" | yq -M -p json -o yaml | yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | .dns2 = ($item.dns2 // $acc.dns2) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$RUN_PROFILE_PATH" -
-		elif [ "$mixin_file_content" = 1 ]; then
-			ucode -S "$MIXIN_UC" | yq -M -p json -o yaml | yq -M -i eval-all '... comments="" | . as $item ireduce ({}; . as $acc | ($acc * $item) | .dns2 = ($item.dns2 // $acc.dns2) | ."nikki-proxies" = (($acc."nikki-proxies" // []) + ($item."nikki-proxies" // [])) | ."nikki-proxy-groups" = (($acc."nikki-proxy-groups" // []) + ($item."nikki-proxy-groups" // [])) | ."nikki-rules" = (($acc."nikki-rules" // []) + ($item."nikki-rules" // [])) ) | .proxies = .nikki-proxies + .proxies | del(.nikki-proxies) | .proxy-groups = .nikki-proxy-groups + .proxy-groups | del(.nikki-proxy-groups) | .rules = .nikki-rules + .rules | del(.nikki-rules) | explode(.)' "$RUN_PROFILE_PATH" "$MIXIN_FILE_PATH" -
-		fi
-		if [ "$proxy_enabled" = 1 ]; then
-			if yq -M -e 'has("tun")' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
-				yq -M -i '(.tun) |= (.auto-route = false | .auto-redirect = false | .auto-detect-interface = false | .disable-icmp-forwarding = true)' "$RUN_PROFILE_PATH"
-			fi
-			if yq -M -e 'has("listeners")' "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
-				yq -M -i '(.listeners[] | select(.type == "tun")) |= (.auto-route = false | .auto-redirect = false | .auto-detect-interface = false | .disable-icmp-forwarding = true)' "$RUN_PROFILE_PATH"
-			fi
+		if ! mixin_profile; then
+			log "Mixin" "Mixin failed. Please check the app log."
+			log "App" "Exit."
+			return 1
 		fi
 	fi
 	# check profile
@@ -260,11 +278,11 @@ start_service() {
 			fi
 		fi
 		if [ "$tcp_mode" = "tun" ] || [ "$udp_mode" = "tun" ]; then
-			if yq -M -e "(has(\"tun\") and (.tun | .enable) and (.tun | has(\"device\"))) or (has(\"listeners\") and .listeners | any_c(.name == \"$tun_listener_name\" and .type == \"tun\" and has(\"device\")))) | not" "$RUN_PROFILE_PATH" > /dev/null 2>&1; then
+			if ! yq -M -e "((.tun.enable == true and .tun.device != null) or ((.listeners // []) | any_c(.name == \"$tun_listener_name\" and .type == \"tun\" and .device != null)))" "$RUN_PROFILE_PATH" >> "$APP_LOG_PATH" 2>&1; then
 				log "Profile" "Check failed."
 				log "Profile" "TUN should be defined."
 				log "App" "Exit."
-				return
+				return 1
 			fi
 		fi
 		log "Profile" "Check passed."
