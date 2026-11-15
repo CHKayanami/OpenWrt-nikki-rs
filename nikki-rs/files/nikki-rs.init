@@ -417,7 +417,7 @@ service_started() {
 		fake_ip6_range=$(yq -M '[.dns2.upstreams[] | select(.type == "fakeip") | .inet6-range][0] // ""' "$RUN_PROFILE_PATH")
 		[ -n "$fake_ip6_range" ] && dns_mode="fake-ip"
 	fi
-	local tun_device; tun_device=$(yq -M "(.tun | select(.enable) | .device) // (.listeners[] | select(.name == \"$tun_listener_name\" and .type == \"tun\") | .device)" "$RUN_PROFILE_PATH")
+	local tun_device; tun_device=$(yq -M "(.tun | select(.enable) | .device) // ([(.listeners // [])[] | select(.name == \"$tun_listener_name\" and .type == \"tun\") | .device][0])" "$RUN_PROFILE_PATH")
 	if [ "$core_only" = 0 ]; then
 		# proxy
 		log "Proxy" "Enabled."
@@ -548,15 +548,20 @@ cleanup() {
 	ip -6 link del "$dummy_device" > /dev/null 2>&1
 	# delete hijack
 	nft delete table inet nikki-rs > /dev/null 2>&1
-	local handles handle
-	handles=$(nft --json list table inet fw4 | jsonfilter -q -e "@['nftables'][*]['rule']" | jsonfilter -q -a -e "@[@['chain']='input']" | jsonfilter -q -a -e "@[@['comment']='nikki-rs']" | jsonfilter -q -a -e "@[*]['handle']")
-	for handle in $handles; do
-		nft delete rule inet fw4 input handle "$handle"
-	done
-	handles=$(nft --json list table inet fw4 | jsonfilter -q -e "@['nftables'][*]['rule']" | jsonfilter -q -a -e "@[@['chain']='forward']" | jsonfilter -q -a -e "@[@['comment']='nikki-rs']" | jsonfilter -q -a -e "@[*]['handle']")
-	for handle in $handles; do
-		nft delete rule inet fw4 forward handle "$handle"
-	done
+	local fw4_rules delete_rules chain handles handle
+	if fw4_rules=$(nft --json list table inet fw4 2>/dev/null); then
+		delete_rules=$(
+			for chain in input forward; do
+				handles=$(printf '%s\n' "$fw4_rules" | jsonfilter -q -e "@['nftables'][@['rule']['chain']='$chain' && @['rule']['comment']='nikki-rs']['rule']['handle']")
+				for handle in $handles; do
+					printf 'delete rule inet fw4 %s handle %s\n' "$chain" "$handle"
+				done
+			done
+		)
+		if [ -n "$delete_rules" ]; then
+			printf '%s\n' "$delete_rules" | nft -f -
+		fi
+	fi
 	# delete started flag
 	rm "$STARTED_FLAG_PATH" > /dev/null 2>&1
 	# revert fix compatible with dockerd
