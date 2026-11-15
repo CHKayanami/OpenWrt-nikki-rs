@@ -1400,3 +1400,9 @@ msgstr "国外 DNS 客户端子网"
 
 msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
 msgstr "可选的 EDNS 客户端子网（IP 或 CIDR），例如 203.0.113.0/24。留空则不生成。"
+
+msgid "LAN Connection Classification Cache"
+msgstr "LAN 连接分类缓存"
+
+msgid "Cache LAN TPROXY/TUN decisions to reduce repeated rule matching."
+msgstr "缓存 LAN TPROXY/TUN 分流结果，减少重复规则匹配。"

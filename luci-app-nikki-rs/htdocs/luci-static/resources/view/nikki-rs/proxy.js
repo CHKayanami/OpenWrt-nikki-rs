@@ -64,6 +64,10 @@ return view.extend({
         o = s.taboption('proxy', form.Flag, 'only_proxy_fake_ip_and_whitelist', _('Only Proxy Fake-IP and Whitelist'));
         o.rmempty = false;
 
+        o = s.taboption('proxy', form.Flag, 'lan_ct_cache', _('LAN Connection Classification Cache'), _('Cache LAN TPROXY/TUN decisions to reduce repeated rule matching.'));
+        o.default = '1';
+        o.rmempty = false;
+
         s.tab('router', _('Router Proxy'));
 
         o = s.taboption('router', form.Flag, 'router_proxy', _('Enable'));

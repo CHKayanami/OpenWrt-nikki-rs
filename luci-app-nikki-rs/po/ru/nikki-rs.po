@@ -1214,3 +1214,9 @@ msgstr "Клиентская подсеть зарубежного DNS"
 
 msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
 msgstr "Необязательная подсеть клиента EDNS (IP или CIDR), например 203.0.113.0/24. Оставьте пустым, чтобы не добавлять."
+
+msgid "LAN Connection Classification Cache"
+msgstr "Кэш классификации соединений LAN"
+
+msgid "Cache LAN TPROXY/TUN decisions to reduce repeated rule matching."
+msgstr "Кэширует решения TPROXY/TUN для LAN, сокращая повторную проверку правил."

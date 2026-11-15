@@ -1379,3 +1379,9 @@ msgstr ""
 
 msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
 msgstr ""
+
+msgid "LAN Connection Classification Cache"
+msgstr ""
+
+msgid "Cache LAN TPROXY/TUN decisions to reduce repeated rule matching."
+msgstr ""

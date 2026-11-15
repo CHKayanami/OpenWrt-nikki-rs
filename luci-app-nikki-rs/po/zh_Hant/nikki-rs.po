@@ -1323,3 +1323,9 @@ msgstr "國外 DNS 用戶端子網"
 
 msgid "Optional EDNS Client Subnet (IP or CIDR), for example 203.0.113.0/24. Leave empty to omit."
 msgstr "選填 EDNS 用戶端子網（IP 或 CIDR），例如 203.0.113.0/24。留空則不產生。"
+
+msgid "LAN Connection Classification Cache"
+msgstr "LAN 連線分類快取"
+
+msgid "Cache LAN TPROXY/TUN decisions to reduce repeated rule matching."
+msgstr "快取 LAN TPROXY/TUN 分流結果，減少重複規則比對。"

@@ -3,6 +3,7 @@
 {%-
 	'use strict';
 
+	import { readfile, writefile } from 'fs';
 	import { cursor } from 'uci';
 	import { connect } from 'ubus';
 	import { uci_bool, uci_array, get_cgroups_version, get_users, get_groups, get_cgroups, load_profile, load_ip_list } from '/etc/nikki-rs/ucode/include.uc';
@@ -81,6 +82,13 @@
 
 	const tcp_mode = uci.get('nikki-rs', 'proxy', 'tcp_mode');
 	const udp_mode = uci.get('nikki-rs', 'proxy', 'udp_mode');
+	const mangle_protocols = [];
+	if (tcp_mode == 'tproxy' || tcp_mode == 'tun') {
+		push(mangle_protocols, 'tcp');
+	}
+	if (udp_mode == 'tproxy' || udp_mode == 'tun') {
+		push(mangle_protocols, 'udp');
+	}
 	const ipv4_dns_hijack = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv4_dns_hijack'));
 	const ipv6_dns_hijack = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv6_dns_hijack'));
 	const ipv4_proxy = uci_bool(uci.get('nikki-rs', 'proxy', 'ipv4_proxy'));
@@ -159,6 +167,40 @@
 	const tun_fw_mark = uci.get('nikki-rs', 'routing', 'tun_fw_mark') ?? '0x83';
 	const tun_fw_mask = uci.get('nikki-rs', 'routing', 'tun_fw_mask') ?? '0xFF';
 	const tun_fw_umask = fw4.hex(~tun_fw_mask & 0xFFFFFFFF);
+
+	// Reserve only the upper 16 ct mark bits; never copy them into packet marks.
+	// Keep the generation outside the service run directory so reload/cleanup
+	// cannot reuse a generation while conntrack entries from it still exist.
+	let lan_ct_cache = lan_proxy && length(mangle_protocols) > 0 &&
+		(uci.get('nikki-rs', 'proxy', 'lan_ct_cache') ?? '1') == '1';
+	let lan_ct_generation = 0;
+	if (lan_ct_cache) {
+		const generation_path = '/tmp/nikki-rs-ct-cache-generation';
+		const previous = readfile(generation_path);
+		const previous_text = previous == null ? '' : trim(previous);
+		const previous_generation = match(previous_text, /^[1-9][0-9]*$/) &&
+			length(previous_text) <= 5 ? int(previous_text) : null;
+		lan_ct_generation = previous == null ? 1 :
+			previous_generation != null && previous_generation >= 1 ? previous_generation + 1 : 0;
+		// Do not wrap: exhausting generations safely falls back to uncached rules.
+		lan_ct_cache = lan_ct_generation > 0 && lan_ct_generation <= 16383;
+		if (lan_ct_cache) {
+			const value = sprintf('%d\n', lan_ct_generation);
+			lan_ct_cache = writefile(generation_path, value) == length(value);
+		}
+	}
+	const lan_ct_states = [ 'direct' ];
+	if (tcp_mode == 'tproxy' || udp_mode == 'tproxy') {
+		push(lan_ct_states, 'tproxy');
+	}
+	if (tcp_mode == 'tun' || udp_mode == 'tun') {
+		push(lan_ct_states, 'tun');
+	}
+	const lan_ct_mask = '0xffff0000';
+	const lan_ct_umask = '0x0000ffff';
+	const lan_ct_direct = fw4.hex((lan_ct_generation * 4 + 1) * 65536);
+	const lan_ct_tproxy = fw4.hex((lan_ct_generation * 4 + 2) * 65536);
+	const lan_ct_tun = fw4.hex((lan_ct_generation * 4 + 3) * 65536);
 
 	const dns_hijack_nfproto = [];
 	if (ipv4_dns_hijack) {
@@ -475,7 +517,7 @@ table inet nikki-rs {
 		{% if (access_control['dns']): %}
 		meta nfproto @dns_hijack_nfproto meta l4proto { tcp, udp } th dport 53 counter return #
 		{% endif %}
-		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy to :{{ tproxy_port }} counter accept {% else %} counter return {% endif %} #
+		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy to :{{ tproxy_port }} {% if (lan_ct_cache): %} goto lan_ct_store_tproxy {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% else %}
 		{% if (length(access_control['ip']) > 0): %}
 		{% if (access_control['dns']): %}
@@ -484,7 +526,7 @@ table inet nikki-rs {
 		{% endif %}
 		{% endif %}
 		{% if (ipv4_proxy): %}
-		meta l4proto { tcp, udp } ip saddr { {{ join(', ', access_control['ip']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy ip to :{{ tproxy_port }} counter accept {% else %} counter return {% endif %} #
+		meta l4proto { tcp, udp } ip saddr { {{ join(', ', access_control['ip']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy ip to :{{ tproxy_port }} {% if (lan_ct_cache): %} goto lan_ct_store_tproxy {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% endif %}
 		{% endif %}
 		{% if (length(access_control['ip6']) > 0): %}
@@ -494,14 +536,14 @@ table inet nikki-rs {
 		{% endif %}
 		{% endif %}
 		{% if (ipv6_proxy): %}
-		meta l4proto { tcp, udp } ip6 saddr { {{ join(', ', access_control['ip6']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy ip6 to :{{ tproxy_port }} counter accept {% else %} counter return {% endif %} #
+		meta l4proto { tcp, udp } ip6 saddr { {{ join(', ', access_control['ip6']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy ip6 to :{{ tproxy_port }} {% if (lan_ct_cache): %} goto lan_ct_store_tproxy {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% endif %}
 		{% endif %}
 		{% if (length(access_control['mac']) > 0): %}
 		{% if (access_control['dns']): %}
 		meta nfproto @dns_hijack_nfproto meta l4proto { tcp, udp } ether saddr { {{ join(', ', access_control['mac']) }} } th dport 53 counter return #
 		{% endif %}
-		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } ether saddr { {{ join(', ', access_control['mac']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy to :{{ tproxy_port }} counter accept {% else %} counter return {% endif %} #
+		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } ether saddr { {{ join(', ', access_control['mac']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy to :{{ tproxy_port }} {% if (lan_ct_cache): %} goto lan_ct_store_tproxy {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% endif %}
 		{% endif %}
 		{% endfor %}
@@ -515,7 +557,7 @@ table inet nikki-rs {
 		{% if (access_control['dns']): %}
 		meta nfproto @dns_hijack_nfproto meta l4proto { tcp, udp } th dport 53 counter return #
 		{% endif %}
-		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} counter accept {% else %} counter return {% endif %} #
+		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} {% if (lan_ct_cache): %} goto lan_ct_store_tun {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% else %}
 		{% if (length(access_control['ip']) > 0): %}
 		{% if (access_control['dns']): %}
@@ -524,7 +566,7 @@ table inet nikki-rs {
 		{% endif %}
 		{% endif %}
 		{% if (ipv4_proxy): %}
-		meta l4proto { tcp, udp } ip saddr { {{ join(', ', access_control['ip']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} counter accept {% else %} counter return {% endif %} #
+		meta l4proto { tcp, udp } ip saddr { {{ join(', ', access_control['ip']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} {% if (lan_ct_cache): %} goto lan_ct_store_tun {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% endif %}
 		{% endif %}
 		{% if (length(access_control['ip6']) > 0): %}
@@ -534,14 +576,14 @@ table inet nikki-rs {
 		{% endif %}
 		{% endif %}
 		{% if (ipv6_proxy): %}
-		meta l4proto { tcp, udp } ip6 saddr { {{ join(', ', access_control['ip6']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} counter accept {% else %} counter return {% endif %} #
+		meta l4proto { tcp, udp } ip6 saddr { {{ join(', ', access_control['ip6']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} {% if (lan_ct_cache): %} goto lan_ct_store_tun {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% endif %}
 		{% endif %}
 		{% if (length(access_control['mac']) > 0): %}
 		{% if (access_control['dns']): %}
 		meta nfproto @dns_hijack_nfproto meta l4proto { tcp, udp } ether saddr { {{ join(', ', access_control['mac']) }} } th dport 53 counter return #
 		{% endif %}
-		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } ether saddr { {{ join(', ', access_control['mac']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} counter accept {% else %} counter return {% endif %} #
+		meta nfproto @proxy_nfproto meta l4proto { tcp, udp } ether saddr { {{ join(', ', access_control['mac']) }} } {% if (access_control['proxy']): %} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} {% if (lan_ct_cache): %} goto lan_ct_store_tun {% else %} counter accept {% endif %} {% else %} counter return {% endif %} #
 		{% endif %}
 		{% endif %}
 		{% endfor %}
@@ -590,8 +632,11 @@ table inet nikki-rs {
 		{% endif %}
 	}
 
+	{% if (length(mangle_protocols) > 0): %}
 	chain mangle_output {
 		type route hook output priority mangle; policy accept;
+		meta l4proto != { {{ join(', ', mangle_protocols) }} } counter return
+		ct direction reply counter return
 		{% if (cgroups_version == 1): %}
 		meta cgroup {{ cgroup_id }} counter return
 		{% elif (cgroups_version == 2): %}
@@ -602,7 +647,6 @@ table inet nikki-rs {
 		meta nfproto ipv6 ip6 daddr != @proxy_whitelist6 {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
 		{% endif %}
 		fib daddr type { local, broadcast, anycast, multicast } counter return
-		ct direction reply counter return
 		ip daddr @reserved_ip {% if (fake_ip_range): %} ip daddr != {{ fake_ip_range }} {% endif %} counter return
 		ip6 daddr @reserved_ip6 {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
 		ip daddr @china_ip counter return
@@ -626,6 +670,7 @@ table inet nikki-rs {
 		iifname "{{ tun_device }}" meta l4proto { icmp, tcp, udp } counter accept
 		{% endif %}
 	}
+	{% endif %}
 	{% endif %}
 
 	{% if (lan_proxy): %}
@@ -664,26 +709,62 @@ table inet nikki-rs {
 		{% endif %}
 	}
 
+	{% if (length(mangle_protocols) > 0): %}
+	{% if (lan_ct_cache): %}
+	{% for (let state in lan_ct_states): %}
+	chain lan_ct_store_{{ state }} {
+		ct direction original ct state { new, established, related } ct mark set ct mark & {{ lan_ct_umask }} | {{ state == 'direct' ? lan_ct_direct : state == 'tproxy' ? lan_ct_tproxy : lan_ct_tun }}
+		{% if (state != 'direct'): %}
+		counter accept
+		{% endif %}
+	}
+	{% endfor %}
+	{% endif %}
+
 	chain mangle_prerouting_lan {
 		type filter hook prerouting priority mangle; policy accept;
+		iifname != @lan_inbound_device counter return
+		meta l4proto != { {{ join(', ', mangle_protocols) }} } counter return
+		ct direction reply counter return
+		fib daddr type { local, broadcast, anycast, multicast } counter return
+		meta l4proto { tcp, udp } ip dscp @bypass_dscp {% if (fake_ip_range): %} ip daddr != {{ fake_ip_range }} {% endif %} counter return
+		meta l4proto { tcp, udp } ip6 dscp @bypass_dscp {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
+		{% for (let fwmark in bypass_fwmark): %}
+		meta mark & {{ fwmark.mask }} == {{ fwmark.mark }} counter return
+		{% endfor %}
+		{% if (lan_ct_cache): %}
+		ct direction original ct mark & {{ lan_ct_mask }} == {{ lan_ct_direct }} counter return
+		{% if (tcp_mode == 'tproxy' || udp_mode == 'tproxy'): %}
+		meta l4proto { tcp, udp } ct direction original ct mark & {{ lan_ct_mask }} == {{ lan_ct_tproxy }} meta mark set meta mark & {{ tproxy_fw_umask }} | {{ tproxy_fw_mark }} tproxy to :{{ tproxy_port }} counter accept
+		{% endif %}
+		{% if (tcp_mode == 'tun' || udp_mode == 'tun'): %}
+		ct direction original ct mark & {{ lan_ct_mask }} == {{ lan_ct_tun }} meta mark set meta mark & {{ tun_fw_umask }} | {{ tun_fw_mark }} counter accept
+		{% endif %}
+		{% endif %}
+		jump lan_classify
+		{% if (lan_ct_cache): %}
+		{% if (tcp_mode == 'tproxy' || udp_mode == 'tproxy'): %}
+		# A failed tproxy statement leaves the routing mark set. Retry next
+		# packet instead of caching the fallthrough as a direct decision.
+		meta mark & {{ tproxy_fw_mask }} == {{ tproxy_fw_mark }} counter return
+		{% endif %}
+		jump lan_ct_store_direct
+		{% endif %}
+	}
+
+	chain lan_classify {
 		{% if (only_proxy_fake_ip_and_whitelist): %}
 		meta nfproto ipv4 ip daddr != @proxy_whitelist {% if (fake_ip_range): %} ip daddr != {{ fake_ip_range }} {% endif %} counter return
 		meta nfproto ipv6 ip6 daddr != @proxy_whitelist6 {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
 		{% endif %}
-		fib daddr type { local, broadcast, anycast, multicast } counter return
-		ct direction reply counter return
 		ip daddr @reserved_ip {% if (fake_ip_range): %} ip daddr != {{ fake_ip_range }} {% endif %} counter return
 		ip6 daddr @reserved_ip6 {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
 		ip daddr @china_ip counter return
 		ip6 daddr @china_ip6 counter return
 		meta nfproto ipv4 meta l4proto . th dport != @proxy_dport {% if (fake_ip_range): %} ip daddr != {{ fake_ip_range }} {% endif %} counter return
 		meta nfproto ipv6 meta l4proto . th dport != @proxy_dport {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
-		meta l4proto { tcp, udp } ip dscp @bypass_dscp {% if (fake_ip_range): %} ip daddr != {{ fake_ip_range }} {% endif %} counter return
-		meta l4proto { tcp, udp } ip6 dscp @bypass_dscp {% if (fake_ip6_range): %} ip6 daddr != {{ fake_ip6_range }} {% endif %} counter return
-		{% for (let fwmark in bypass_fwmark): %}
-		meta mark & {{ fwmark.mask }} == {{ fwmark.mark }} counter return
-		{% endfor %}
-		iifname @lan_inbound_device meta l4proto vmap { tcp: {% if (tcp_mode == 'tproxy'): %} jump lan_tproxy {% elif (tcp_mode == 'tun'): %} jump lan_tun {% else %} continue {% endif %}, udp: {% if (udp_mode == 'tproxy'): %} jump lan_tproxy {% elif (udp_mode == 'tun'): %} jump lan_tun {% else %} continue {% endif %} }
+		meta l4proto vmap { tcp: {% if (tcp_mode == 'tproxy'): %} jump lan_tproxy {% elif (tcp_mode == 'tun'): %} jump lan_tun {% else %} continue {% endif %}, udp: {% if (udp_mode == 'tproxy'): %} jump lan_tproxy {% elif (udp_mode == 'tun'): %} jump lan_tun {% else %} continue {% endif %} }
 	}
+	{% endif %}
 	{% endif %}
 }
