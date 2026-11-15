@@ -66,9 +66,8 @@ config['tun']['enable'] = uci_bool(uci.get('nikki-rs', 'mixin', 'tun_enabled'));
 config['tun']['enable-tcp'] = uci_bool(uci.get('nikki-rs', 'mixin', 'tun_enable_tcp'));
 config['tun']['device'] = uci.get('nikki-rs', 'mixin', 'tun_device');
 config['tun']['stack'] = uci.get('nikki-rs', 'mixin', 'tun_stack');
-config['tun']['mtu'] = uci_int(uci.get('nikki-rs', 'mixin', 'tun_mtu'));
+config['tun']['mtu'] = uci_int(uci.get('nikki-rs', 'mixin', 'tun_mtu') ?? uci.get('nikki-rs', 'mixin', 'tun_gso_max_size'));
 config['tun']['gso'] = uci_bool(uci.get('nikki-rs', 'mixin', 'tun_gso'));
-config['tun']['gso-max-size'] = uci_int(uci.get('nikki-rs', 'mixin', 'tun_gso_max_size'));
 if (uci_bool(uci.get('nikki-rs', 'mixin', 'tun_dns_hijack'))) {
 	config['tun']['dns-hijack'] = uci_array(uci.get('nikki-rs', 'mixin', 'tun_dns_hijacks'));
 }

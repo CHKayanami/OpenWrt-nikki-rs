@@ -424,10 +424,6 @@ msgstr "檔案:"
 msgid "GSO"
 msgstr "通用分段卸載"
 
-#: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:664
-msgid "GSO Max Size"
-msgstr "分段最大長度"
-
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/app.js:132
 #: applications/luci-app-nikki-rs/htdocs/luci-static/resources/view/nikki-rs/mixin.js:515
 msgid "General Config"

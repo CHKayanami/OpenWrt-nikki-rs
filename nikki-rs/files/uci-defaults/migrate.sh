@@ -271,6 +271,14 @@ boot_start=$(uci -q get nikki-rs.config.boot_start); [ -z "$boot_start" ] && uci
 # LAN conntrack classification cache: default on, preserving an explicit opt-out.
 proxy_lan_ct_cache=$(uci -q get nikki-rs.proxy.lan_ct_cache); [ -z "$proxy_lan_ct_cache" ] && uci set nikki-rs.proxy.lan_ct_cache=1
 
+# Replace the removed TUN GSO size option with MTU, preserving an explicit MTU.
+mixin_tun_mtu=$(uci -q get nikki-rs.mixin.tun_mtu)
+mixin_tun_gso_max_size=$(uci -q get nikki-rs.mixin.tun_gso_max_size)
+if [ -z "$mixin_tun_mtu" ] && [ -n "$mixin_tun_gso_max_size" ]; then
+	uci set nikki-rs.mixin.tun_mtu="$mixin_tun_gso_max_size"
+fi
+uci -q del nikki-rs.mixin.tun_gso_max_size
+
 # commit
 uci commit nikki-rs
 
